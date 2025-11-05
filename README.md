@@ -7,10 +7,11 @@ AI-powered PDF extraction that transforms your documents into structured data. B
 ## Features
 
 - **PDF Upload**: Intuitive drag-and-drop PDF upload interface
+- **CLI Support**: Headless PDF processing via command-line interface for automation
 - **Image Conversion**: Converts PDF pages to WebP images using pdftocairo
 - **AI Extraction**: Uses Google Gemini 2.0 Flash multimodal AI for intelligent extraction
 - **Multiple Formats**: Export results in Markdown, MDX, JSON, XML, YAML, HTML, or CSV
-- **Real-time Progress**: Live progress tracking with page-by-page updates
+- **Real-time Progress**: Live progress tracking with page-by-page updates (web and CLI)
 - **Threaded Output**: View results as they complete with real-time streaming
 - **Dark Mode**: Beautiful dark mode support with localStorage persistence
 - **Minimal Design**: Clean black/white/grey aesthetic inspired by shadcn/ui
@@ -78,11 +79,59 @@ Your API key is stored securely in your browser's session storage and is never s
 
 ## Usage
 
+### Web Interface
+
 1. **Select Output Format**: Choose from Markdown, MDX, JSON, XML, YAML, HTML, or CSV
 2. **Upload a PDF**: Drag and drop or click to select a PDF file
 3. **Processing**: The app automatically converts PDF to WebP images and extracts data using AI
 4. **View Results**: See extracted content in real-time as pages complete
 5. **Download**: Export individual pages or download all pages combined
+
+### CLI (Headless Mode)
+
+PDFlow includes a command-line interface for headless PDF processing without the web UI.
+
+**Extract PDF to structured data:**
+```bash
+npm run pdflow -- extract <pdf-file> [options]
+```
+
+**Options:**
+- `-f, --format <format>`: Output format (markdown|json|xml|yaml|html|mdx|csv) [default: markdown]
+- `-o, --output <directory>`: Output directory [default: ./outputs]
+- `-k, --api-key <key>`: Gemini API key (or set GEMINI_API_KEY env var)
+- `-a, --aggregate`: Aggregate all pages into a single file
+- `-v, --verbose`: Show verbose output
+
+**Examples:**
+```bash
+# Extract PDF to markdown
+npm run pdflow -- extract document.pdf -f markdown -o ./results
+
+# Extract to JSON with aggregation
+npm run pdflow -- extract document.pdf -f json -a
+
+# Extract with custom API key
+npm run pdflow -- extract document.pdf -k YOUR_API_KEY
+
+# Extract with verbose output
+npm run pdflow -- extract document.pdf -v
+```
+
+**Validate Gemini API key:**
+```bash
+npm run pdflow -- validate-key
+# or
+npm run pdflow -- validate-key -k YOUR_API_KEY
+```
+
+**CLI Output:**
+The CLI creates a session directory in your output folder with:
+- Individual page files (e.g., `page-1.md`, `page-2.md`)
+- Metadata files (e.g., `page-1.meta.json`)
+- Aggregated file (if `-a` flag is used, e.g., `full.markdown`)
+
+**📚 For complete CLI documentation, see [CLI Usage Guide](docs/CLI_USAGE.md)**
 
 ## Project Structure
 
@@ -107,11 +156,15 @@ Your API key is stored securely in your browser's session storage and is never s
     /utils
       gemini-extractor.ts             # Gemini AI extraction logic
       aggregator.ts                   # Output aggregation
+      prompt-builder.ts               # Dynamic prompt generation
     /store
       useAppStore.ts                  # Zustand state management
     page.tsx                          # Main page with dark mode
     layout.tsx                        # Root layout
     globals.css                       # Global styles
+  /cli
+    pdflow.ts                         # CLI entry point
+    pdf-processor.ts                  # Headless PDF processing logic
 /templates
   /formats
     markdown_format.hbs               # Markdown extraction template
@@ -123,11 +176,14 @@ Your API key is stored securely in your browser's session storage and is never s
     csv_format.hbs                    # CSV extraction template
 /scripts
   convert-to-webp.sh                  # PDF to WebP conversion script
+/docs
+  CLI_USAGE.md                        # Complete CLI documentation
 /public
   PDFlow_Logo.png                     # Logo (icon only)
   PDFlow_Logo_W_Text.png              # Logo with text
-/uploads                              # Temporary upload storage
-/outputs                              # Processed output files
+/uploads                              # Temporary upload storage (gitignored)
+/outputs                              # Processed output files (gitignored)
+/test-cli-outputs                     # CLI test outputs (gitignored)
 ```
 
 ## API Endpoints

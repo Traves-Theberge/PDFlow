@@ -1,13 +1,19 @@
 {
   "name": "pdflow",
-  "version": "0.2.0",
-  "description": "Multimodal PDF-to-structured-data extraction app",
+  "version": "0.3.0",
+  "description": "Multimodal PDF-to-structured-data extraction app with CLI support",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cli:build": "tsc src/cli/pdflow.ts --outDir dist --module commonjs --esModuleInterop --skipLibCheck --resolveJsonModule",
+    "cli": "node dist/cli/pdflow.js",
+    "pdflow": "tsx src/cli/pdflow.ts"
+  },
+  "bin": {
+    "pdflow": "./dist/cli/pdflow.js"
   },
   "keywords": [
     "pdf",
@@ -25,12 +31,14 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "ai": "^5.0.87",
+    "commander": "^14.0.2",
     "eslint": "^9.39.1",
     "eslint-config-next": "^16.0.1",
     "framer-motion": "^12.23.24",
     "handlebars": "^4.7.8",
     "next": "^16.0.1",
     "pdf-lib": "^1.17.1",
+    "pdf-poppler": "^0.2.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "shadcn-ui": "^0.9.5",
@@ -39,5 +47,8 @@
     "typescript": "^5.9.3",
     "zod": "^4.1.12",
     "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.6"
   }
 }

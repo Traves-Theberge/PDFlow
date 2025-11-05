@@ -46,8 +46,16 @@ next-env.d.ts
 *~
 
 # Uploads and outputs (generated files)
-/uploads/
-/outputs/
+# Keep the directories but ignore their contents (except sample.pdf)
+/uploads/*
+!/uploads/.gitkeep
+!/uploads/sample.pdf
+
+/outputs/*
+!/outputs/.gitkeep
+
+/test-cli-outputs/*
+!/test-cli-outputs/.gitkeep
 
 # Temporary files
 *.tmp
