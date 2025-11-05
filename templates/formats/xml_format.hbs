@@ -1,0 +1,27 @@
+{{!-- XML Output Module --}}
+
+### XML Format Specification
+
+Return a valid, well-formed XML document.
+
+### Rules
+- Root element must be `<page>` with attribute `number="{{pageNumber}}"`.
+- Each paragraph is a `<p>` element.
+- Headings use `<h1>`, `<h2>`, etc. based on visual hierarchy.
+- Lists use `<ul>` / `<li>` tags.
+- Tables use `<table>`, `<row>`, `<cell>` tags.
+- Images use `<image id="" description=""/>`.
+- All text content must be properly escaped.
+- Maintain exact reading order from the document.
+
+### Example Output
+```xml
+<page number="1">
+  <h1>Report Summary</h1>
+  <p>This report outlines Q1 performance metrics.</p>
+  <table>
+    <row><cell>Metric</cell><cell>Value</cell></row>
+    <row><cell>Revenue</cell><cell>$500,000</cell></row>
+  </table>
+  <image id="1.1img" description="Company logo top-left"/>
+</page>

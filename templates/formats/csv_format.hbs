@@ -1,0 +1,52 @@
+{{!-- CSV Output Module --}}
+
+### CSV Format Specification
+
+Your output must be valid CSV (Comma-Separated Values) format.
+Extract tabular data and convert ALL content into a structured table format.
+
+### Rules
+1. First row MUST be column headers
+2. Use commas (`,`) as field separators
+3. Enclose fields containing commas, quotes, or newlines in double quotes (`"`)
+4. Escape internal quotes by doubling them (`""`)
+5. Use UTF-8 encoding
+6. One record per line (use `\n` for line breaks)
+7. Do not include any text outside the CSV structure
+
+### Column Headers (Standard)
+```
+Page,Type,Content,Position,Font_Size,Style
+```
+
+### Alternative for Tables
+If the page contains a clear table structure, use the table's own headers.
+
+### Content Extraction Strategy
+- **Headings**: Type="heading", include font size estimate
+- **Paragraphs**: Type="paragraph", content as single cell
+- **Lists**: Type="list_item", one row per item
+- **Tables**: Extract as-is with original headers
+- **Images**: Type="image", description in Content column
+
+### Escaping Examples
+- Text with comma: `"Smith, John"`
+- Text with quote: `"He said ""Hello"""`
+- Multiline text: `"Line 1\nLine 2"`
+
+### Example Output
+```csv
+Page,Type,Content,Position,Font_Size,Style
+{{pageNumber}},heading,"INVOICE SUMMARY",top,24,bold
+{{pageNumber}},paragraph,"Customer details are listed below.",middle,12,normal
+{{pageNumber}},table_row,"Item,Quantity,Price",table,10,normal
+{{pageNumber}},table_row,"Widget A,5,$25.00",table,10,normal
+{{pageNumber}},image,"Company logo",top-right,0,none
+```
+
+### Important Notes
+- Maintain reading order (top-to-bottom, left-to-right)
+- For complex tables, preserve ALL rows and columns
+- Include page number in every row
+- Quote ALL text fields to prevent parsing errors
+- Do NOT add explanatory text or comments

@@ -1,0 +1,95 @@
+{{!-- HTML Output Module --}}
+
+### HTML Format Specification
+
+Your output must be semantic, valid HTML5 representing the document structure.
+
+### Rules
+1. Use semantic HTML tags: `<h1>-<h6>`, `<p>`, `<ul>`, `<ol>`, `<table>`, `<figure>`
+2. Preserve document hierarchy and reading order
+3. Use appropriate heading levels based on visual size/importance
+4. Tables must use proper `<table>`, `<thead>`, `<tbody>`, `<tr>`, `<th>`, `<td>` structure
+5. Include `alt` attributes for all images
+6. Escape special HTML characters: `&`, `<`, `>`, `"`, `'`
+7. Use CSS classes for styling hints (e.g., `class="emphasized"`)
+
+### Structure Template
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page {{pageNumber}} - Extracted Content</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .page-number { color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="page-number">Page {{pageNumber}}</div>
+
+    <!-- EXTRACTED CONTENT GOES HERE -->
+
+</body>
+</html>
+```
+
+### Content Mapping
+- **Headings**: `<h1>`, `<h2>`, `<h3>` based on size/hierarchy
+- **Paragraphs**: `<p>text content</p>`
+- **Bold text**: `<strong>text</strong>`
+- **Italic text**: `<em>text</em>`
+- **Bullet lists**: `<ul><li>item</li></ul>`
+- **Numbered lists**: `<ol><li>item</li></ol>`
+- **Tables**: Full `<table>` structure
+- **Images**: `<figure><img src="{{pageNumber}}.{{index}}img.webp" alt="description"><figcaption>description</figcaption></figure>`
+
+### Example Output
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Page {{pageNumber}} - Extracted Content</title>
+</head>
+<body>
+    <div class="page-number">Page {{pageNumber}}</div>
+
+    <h1>Invoice Summary</h1>
+
+    <p>Customer: ACME Corporation</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Widget A</td>
+                <td>5</td>
+                <td>$25.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <figure>
+        <img src="{{pageNumber}}.1img.webp" alt="Company logo">
+        <figcaption>Company logo</figcaption>
+    </figure>
+</body>
+</html>
+```
+
+### Validation
+- All tags must be properly closed
+- Nest elements correctly
+- Escape all special characters in content
+- Include complete DOCTYPE and HTML structure

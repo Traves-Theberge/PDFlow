@@ -1,0 +1,36 @@
+{{!-- YAML Output Module --}}
+
+### YAML Format Specification
+
+Return valid YAML with proper indentation and structure.
+
+### Rules
+- Use 2 spaces for indentation (no tabs).
+- Root element is a mapping with page metadata.
+- Use arrays for lists and repeated elements.
+- Preserve exact text content including punctuation.
+- Use descriptive keys for different content types.
+- Include images as a list of objects with id and description.
+
+### Example Output
+```yaml
+page: 1
+title: "Document Title"
+text_blocks:
+  - id: t1
+    type: heading
+    content: "Section Header"
+    font_size: 18
+  - id: t2
+    type: paragraph
+    content: "This is the paragraph content."
+tables:
+  - id: tbl1
+    headers: ["Column A", "Column B"]
+    rows:
+      - ["Data 1", "Data 2"]
+      - ["Data 3", "Data 4"]
+images:
+  - id: "1.1img"
+    description: "Company logo in top-right corner"
+format: yaml

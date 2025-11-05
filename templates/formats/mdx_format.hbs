@@ -1,0 +1,64 @@
+{{!-- MDX Output Module --}}
+
+### MDX Format Specification
+
+**CRITICAL**: Output ONLY raw MDX code. Do NOT wrap your response in code fences (```mdx). Start directly with the MDX content.
+
+Return valid MDX that can be processed by React/Next.js.
+
+### Rules
+- Use JSX components for structured elements.
+- Import React components at the top if needed.
+- Use standard Markdown syntax for text content.
+- Export components for tables, images, and special elements.
+- Preserve exact text content and structure.
+
+### Components Available
+- `<Heading level={1-6}>` - For headers
+- `<Paragraph>` - For text paragraphs
+- `<Table data={rows}>` - For tables
+- `<Image src="" alt=""/>` - For images
+- `<List items={[]}>` - For bullet lists
+
+### Example Output
+```mdx
+import { Heading, Paragraph, Table, Image, List } from './components';
+
+export default function PageContent() {
+  return (
+    <>
+      <Heading level={1}>Document Title</Heading>
+      
+      <Paragraph>
+        This is the first paragraph with regular text content.
+      </Paragraph>
+      
+      <Heading level={2}>Section Header</Heading>
+      
+      <List items={[
+        "First bullet point",
+        "Second bullet point",
+        "Third bullet point"
+      ]} />
+      
+      <Table 
+        headers={["Column A", "Column B"]}
+        rows={[
+          ["Data 1", "Data 2"],
+          ["Data 3", "Data 4"]
+        ]}
+      />
+      
+      <Image 
+        src="{{pageNumber}}.1img.webp" 
+        alt="Company logo top-right corner" 
+      />
+    </>
+  );
+}
+
+### Output Instructions
+- **DO NOT** add "```mdx" at the beginning
+- **DO NOT** add "```" at the end
+- Output should start directly with: `import { ... } from ...`
+- This is raw MDX code, not a code fence example

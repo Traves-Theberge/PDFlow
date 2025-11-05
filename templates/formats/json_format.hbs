@@ -1,0 +1,138 @@
+{{!-- JSON Output Module --}}
+
+### JSON Format Specification
+
+**CRITICAL**: You MUST output ONLY valid JSON. No markdown code blocks, no explanations, no preamble.
+Start your response with `{` and end with `}`.
+
+### Gemini Behavior Instructions
+- DO NOT wrap JSON in markdown code fences (```json or ```)
+- DO NOT add any text before or after the JSON object
+- DO NOT include comments in the JSON
+- DO use proper JSON escaping for special characters
+- DO ensure all strings use double quotes (")
+- DO validate JSON syntax before outputting
+
+### Required Structure
+```json
+{
+  "page": {{pageNumber}},
+  "sessionId": "{{sessionId}}",
+  "text_blocks": [
+    {
+      "id": "t1",
+      "type": "heading" | "paragraph" | "list_item" | "caption",
+      "content": "Exact text as it appears",
+      "level": 1-6,
+      "position": {
+        "top": true|false,
+        "middle": true|false,
+        "bottom": true|false
+      },
+      "style": {
+        "bold": true|false,
+        "italic": true|false,
+        "fontSize": "large"|"medium"|"small"
+      }
+    }
+  ],
+  "tables": [
+    {
+      "id": "tbl1",
+      "caption": "Table title if present",
+      "headers": ["Column 1", "Column 2", "Column 3"],
+      "rows": [
+        ["Cell 1.1", "Cell 1.2", "Cell 1.3"],
+        ["Cell 2.1", "Cell 2.2", "Cell 2.3"]
+      ]
+    }
+  ],
+  "lists": [
+    {
+      "id": "lst1",
+      "type": "bullet" | "numbered",
+      "items": ["First item", "Second item", "Third item"]
+    }
+  ],
+  "images": [
+    {
+      "id": "{{pageNumber}}.1img",
+      "description": "Detailed description of what the image shows",
+      "position": "top-left" | "top-right" | "center" | "bottom-left" | "bottom-right"
+    }
+  ],
+  "metadata": {
+    "page": {{pageNumber}},
+    "format": "json",
+    "extractedAt": "{{timestamp}}",
+    "confidence": "high" | "medium" | "low"
+  }
+}
+```
+
+### Extraction Rules
+1. **Reading Order**: Extract content top-to-bottom, left-to-right
+2. **Text Blocks**: Create separate entries for each distinct text element
+3. **Tables**: Capture ALL rows and columns, maintain cell alignment
+4. **Lists**: Preserve numbering/bullets and item order
+5. **Images**: Describe what's visible, note position
+6. **Special Characters**: Properly escape: `\"` for quotes, `\\` for backslashes, `\n` for newlines
+7. **Numbers**: Keep as strings in content, but can be numbers in metadata
+8. **Null Values**: Use `null` for missing data, not empty strings unless text is actually empty
+
+### Example Output (NO CODE FENCES)
+{
+  "page": {{pageNumber}},
+  "sessionId": "{{sessionId}}",
+  "text_blocks": [
+    {
+      "id": "t1",
+      "type": "heading",
+      "content": "INVOICE SUMMARY",
+      "level": 1,
+      "position": {"top": true, "middle": false, "bottom": false},
+      "style": {"bold": true, "italic": false, "fontSize": "large"}
+    },
+    {
+      "id": "t2",
+      "type": "paragraph",
+      "content": "Customer: ACME Corporation\nAddress: 123 Main St",
+      "level": 0,
+      "position": {"top": false, "middle": true, "bottom": false},
+      "style": {"bold": false, "italic": false, "fontSize": "medium"}
+    }
+  ],
+  "tables": [
+    {
+      "id": "tbl1",
+      "caption": "Order Items",
+      "headers": ["Item", "Qty", "Price"],
+      "rows": [
+        ["Widget A", "5", "$25.00"],
+        ["Widget B", "3", "$15.00"]
+      ]
+    }
+  ],
+  "lists": [],
+  "images": [
+    {
+      "id": "{{pageNumber}}.1img",
+      "description": "Company logo showing mountain and sun",
+      "position": "top-right"
+    }
+  ],
+  "metadata": {
+    "page": {{pageNumber}},
+    "format": "json",
+    "confidence": "high"
+  }
+}
+
+### Pre-Output Checklist
+- [ ] JSON starts with `{` and ends with `}`
+- [ ] All strings use double quotes
+- [ ] All commas are in the right place
+- [ ] No trailing commas
+- [ ] All brackets/braces are balanced
+- [ ] Special characters are escaped
+- [ ] No text outside the JSON object

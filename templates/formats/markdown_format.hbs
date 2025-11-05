@@ -1,0 +1,53 @@
+{{!-- Markdown Output Module --}}
+
+### Markdown Format Specification
+
+**CRITICAL**: Output ONLY raw Markdown. Do NOT wrap your response in code fences (```markdown). Do NOT add any preamble or explanation. Start directly with the Markdown content.
+
+Your output must be a well-structured Markdown document representing the PDF layout.
+
+### Rules
+1. Use `#`, `##`, `###` for visible headers (respect font hierarchy if evident).
+2. Use bullet lists (`- item`) for list-like elements.
+3. Use fenced code blocks (```) only if actual code is visibly present in the document.
+4. Use bold `**text**` for emphasized or bold text; use `_text_` for italics.
+5. Tables must be written using standard Markdown table syntax.
+6. Preserve line breaks and paragraph structure exactly as they appear.
+7. **DO NOT** wrap the entire output in markdown code fences.
+8. **DO NOT** add "```markdown" at the beginning or "```" at the end.
+
+### Image Handling
+For every image, diagram, or logo visible:
+- Create a line:
+  `![{{description}}]({{pageNumber}}.{{index}}img.webp)`
+- Keep image order consistent with top-to-bottom page flow.
+- Never describe images textually inside the body — use only the Markdown image syntax.
+
+### Output Format
+Your response should start immediately with Markdown content like this:
+
+# Sample Document Title
+
+This is paragraph one with regular text.
+
+## Section Header
+
+- First bullet
+- Second bullet
+
+| Column A | Column B |
+|-----------|-----------|
+| Value 1   | Value 2   |
+
+![Company logo](1.1img.webp)
+
+### What NOT to do
+❌ WRONG (do not wrap in code fences):
+```markdown
+# Title
+Content here
+```
+
+✅ CORRECT (output raw markdown):
+# Title
+Content here

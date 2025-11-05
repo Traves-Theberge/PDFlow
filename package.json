@@ -1,0 +1,43 @@
+{
+  "name": "pdflow",
+  "version": "0.2.0",
+  "description": "Multimodal PDF-to-structured-data extraction app",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [
+    "pdf",
+    "ai",
+    "extraction",
+    "nextjs",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@tailwindcss/postcss": "^4.1.16",
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "ai": "^5.0.87",
+    "eslint": "^9.39.1",
+    "eslint-config-next": "^16.0.1",
+    "framer-motion": "^12.23.24",
+    "handlebars": "^4.7.8",
+    "next": "^16.0.1",
+    "pdf-lib": "^1.17.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "shadcn-ui": "^0.9.5",
+    "sharp": "^0.34.4",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.9.3",
+    "zod": "^4.1.12",
+    "zustand": "^5.0.8"
+  }
+}

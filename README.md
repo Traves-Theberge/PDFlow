@@ -1,0 +1,278 @@
+# PDFlow
+
+AI-powered PDF extraction that transforms your documents into structured data. Built with Next.js, TypeScript, and Google Gemini AI.
+
+![PDFlow Logo](public/PDFlow_Logo_W_Text.png)
+
+## Features
+
+- **PDF Upload**: Intuitive drag-and-drop PDF upload interface
+- **Image Conversion**: Converts PDF pages to WebP images using pdftocairo
+- **AI Extraction**: Uses Google Gemini 2.0 Flash multimodal AI for intelligent extraction
+- **Multiple Formats**: Export results in Markdown, MDX, JSON, XML, YAML, HTML, or CSV
+- **Real-time Progress**: Live progress tracking with page-by-page updates
+- **Threaded Output**: View results as they complete with real-time streaming
+- **Dark Mode**: Beautiful dark mode support with localStorage persistence
+- **Minimal Design**: Clean black/white/grey aesthetic inspired by shadcn/ui
+- **Responsive Design**: Mobile-friendly interface with TailwindCSS 4
+- **Type Safety**: Full TypeScript implementation with Zod validation
+- **Session Storage API Keys**: Secure API key management in browser session storage
+
+## Tech Stack
+
+| Layer | Technology |
+|--------|-------------|
+| Frontend | Next.js 16.0.1, React 19, TailwindCSS 4, Framer Motion |
+| State | Zustand |
+| Validation | Zod |
+| Templates | Handlebars |
+| AI Model | Google Gemini 2.0 Flash Exp (multimodal) |
+| AI SDK | Vercel AI SDK |
+| Backend | TypeScript + Next.js API Routes |
+| PDF Processing | pdftocairo (poppler-utils) |
+| Storage | Local filesystem (uploads, outputs) |
+
+## Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+- pdftocairo (poppler-utils)
+- Google Gemini API key
+
+### Installing pdftocairo
+
+**Ubuntu/Debian:**
+```bash
+sudo apt-get install poppler-utils
+```
+
+**macOS:**
+```bash
+brew install poppler
+```
+
+**Windows:**
+Download and install [poppler for Windows](httpblog.alivate.com.au/poppler-windows/) and add to PATH.
+
+## Setup
+
+1. **Clone the repository and install dependencies:**
+```bash
+git clone https://github.com/traves-theberge/pdflow.git
+cd pdflow/pdf-intelligence
+npm install
+```
+
+2. **Run the development server:**
+```bash
+npm run dev
+```
+
+3. **Open the application:**
+   - Navigate to [http://localhost:3000](http://localhost:3000)
+   - Click the settings gear icon in the top right
+   - Enter your Google Gemini API key
+   - Click "Save API Key"
+
+Your API key is stored securely in your browser's session storage and is never sent to any server except Google's Gemini API.
+
+## Usage
+
+1. **Select Output Format**: Choose from Markdown, MDX, JSON, XML, YAML, HTML, or CSV
+2. **Upload a PDF**: Drag and drop or click to select a PDF file
+3. **Processing**: The app automatically converts PDF to WebP images and extracts data using AI
+4. **View Results**: See extracted content in real-time as pages complete
+5. **Download**: Export individual pages or download all pages combined
+
+## Project Structure
+
+```
+/src
+  /app
+    /api
+      /upload
+        route.ts                      # PDF upload endpoint
+      /process
+        route.ts                      # Processing endpoint with progress
+      /outputs/[sessionId]/[filename]
+        route.ts                      # Output file serving
+      /settings
+        /validate-key
+          route.ts                    # API key validation
+    /components
+      UploadForm.tsx                  # File upload component
+      ProgressBar.tsx                 # Progress tracking with polling
+      EnhancedOutputViewer.tsx        # Real-time threaded output display
+      Settings.tsx                    # Settings modal with API key management
+    /utils
+      gemini-extractor.ts             # Gemini AI extraction logic
+      aggregator.ts                   # Output aggregation
+    /store
+      useAppStore.ts                  # Zustand state management
+    page.tsx                          # Main page with dark mode
+    layout.tsx                        # Root layout
+    globals.css                       # Global styles
+/templates
+  /formats
+    markdown_format.hbs               # Markdown extraction template
+    mdx_format.hbs                    # MDX extraction template
+    json_format.hbs                   # JSON extraction template
+    xml_format.hbs                    # XML extraction template
+    yaml_format.hbs                   # YAML extraction template
+    html_format.hbs                   # HTML extraction template
+    csv_format.hbs                    # CSV extraction template
+/scripts
+  convert-to-webp.sh                  # PDF to WebP conversion script
+/public
+  PDFlow_Logo.png                     # Logo (icon only)
+  PDFlow_Logo_W_Text.png              # Logo with text
+/uploads                              # Temporary upload storage
+/outputs                              # Processed output files
+```
+
+## API Endpoints
+
+### POST /api/upload
+Uploads a PDF file and converts it to WebP images.
+
+**Request:** `multipart/form-data`
+- `file`: PDF file
+
+**Response:**
+```json
+{
+  "success": true,
+  "sessionId": "session_1234567890_abc123",
+  "pageCount": 5,
+  "message": "Successfully uploaded and converted PDF to 5 pages"
+}
+```
+
+### POST /api/process
+Starts processing a session or aggregates results.
+
+**Request:**
+```json
+{
+  "sessionId": "session_1234567890_abc123",
+  "format": "markdown",
+  "aggregate": true
+}
+```
+
+**Response:**
+```json
+{
+  "sessionId": "session_1234567890_abc123",
+  "status": "completed",
+  "totalPages": 5,
+  "processedPages": 5,
+  "aggregate": {
+    "format": "markdown",
+    "totalPages": 5,
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  }
+}
+```
+
+### GET /api/process?sessionId=<id>
+Gets processing progress for a session.
+
+**Response:**
+```json
+{
+  "sessionId": "session_1234567890_abc123",
+  "status": "processing",
+  "totalPages": 5,
+  "processedPages": 3,
+  "processingTime": "15.23s"
+}
+```
+
+## Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `GEMINI_API_KEY` | Google Gemini API key (can be set via UI) | Optional* |
+| `PORT` | Server port (defaults to 3000) | No |
+| `NODE_ENV` | Node environment | No |
+
+*The API key can be set in the application UI via Settings. If set in `.env.local`, it will be used as a fallback.
+
+## Development
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+### Adding New Features
+
+1. **New Output Formats**: Add to `aggregator.ts` and update the format selector
+2. **Custom Processing**: Modify `gemini-extractor.ts` for different extraction prompts
+3. **UI Components**: Add to `/src/app/components` and import in `page.tsx`
+
+## Deployment
+
+### Vercel
+
+1. Push to GitHub
+2. Connect repository to Vercel
+3. Add `GEMINI_API_KEY` as environment variable
+4. Deploy
+
+### Docker
+
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "start"]
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **"pdftocairo not found"**
+   - Install poppler-utils (see prerequisites)
+
+2. **"Gemini API key not found"**
+   - Check `.env.local` file exists and contains valid API key
+
+3. **"PDF conversion failed"**
+   - Ensure PDF is not password-protected
+   - Check file size limits
+
+4. **"Processing stuck at 0%"**
+   - Check browser console for errors
+   - Verify API endpoints are responding
+
+### Logs
+
+- Development: Check terminal output
+- Production: Check Vercel function logs
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## Support
+
+For issues and questions:
+- Open an issue on GitHub
+- Check the troubleshooting section above
