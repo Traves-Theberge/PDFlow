@@ -1,6 +1,8 @@
 # PDFlow
 
-AI-powered PDF extraction that transforms your documents into structured data. Built with Next.js, TypeScript, and Google Gemini AI.
+**Transform PDFs into structured data with AI-powered extraction.**
+
+PDFlow is a modern, full-stack PDF extraction tool that leverages multimodal AI to intelligently extract and structure content from PDF documents. Whether you need documentation in Markdown, data in JSON, or reports in HTML, PDFlow delivers accurate extraction with both web and CLI interfaces.
 
 ![PDFlow Logo](public/PDFlow_Logo_W_Text.png)
 
@@ -81,11 +83,14 @@ Your API key is stored securely in your browser's session storage and is never s
 
 ### Web Interface
 
-1. **Select Output Format**: Choose from Markdown, MDX, JSON, XML, YAML, HTML, or CSV
-2. **Upload a PDF**: Drag and drop or click to select a PDF file
-3. **Processing**: The app automatically converts PDF to WebP images and extracts data using AI
-4. **View Results**: See extracted content in real-time as pages complete
-5. **Download**: Export individual pages or download all pages combined
+1. **Configure API Key**: Enter your Gemini API key in Settings (first time only)
+2. **Select Output Format**: Choose from Markdown, MDX, JSON, XML, YAML, HTML, or CSV
+3. **Upload a PDF**: Drag and drop or click to select a PDF file
+4. **Processing**: The app automatically converts PDF to WebP images and extracts data using AI
+5. **View Results**: See extracted content in real-time as pages complete
+6. **Download**: Export individual pages or download all pages combined
+
+**📚 For complete web interface guide, see [Web Usage Documentation](docs/WEB_USAGE.md)**
 
 ### CLI (Headless Mode)
 
