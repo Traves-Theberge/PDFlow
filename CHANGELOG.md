@@ -5,6 +5,37 @@ All notable changes to PDFlow will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.0] - 2025-11-06
+
+### Added - Mobile Navigation & Documentation Updates
+- 📱 **Mobile sidebar menu** with hamburger button and slide-out navigation
+  - Smooth slide-in animation from left
+  - Click-outside-to-close overlay
+  - Auto-close on navigation
+  - Full dark mode support
+  - Proper accessibility with ARIA labels
+- 📄 **Documentation page for Logging & Monitoring** with comprehensive guides
+- 🔧 **Port standardization across all documentation**:
+  - Port 3001 for local development
+  - Port 3535 for Docker deployment
+  - Updated in: quickstart, installation, API reference, Docker guide, MCP integration
+
+### Changed - Documentation Improvements
+- 📚 **Renamed "Claude Desktop" section to "AI Tools"** to reflect broader MCP support
+  - Includes: Claude Desktop, Claude Code, Cursor, VS Code (Cline)
+  - Updated navigation label to "MCP Integration"
+  - Fixed all cross-references throughout documentation
+- 🐳 **Updated Node.js requirement from 18+ to 20+** (required for Next.js 16)
+  - Updated installation commands for macOS and Ubuntu
+  - Updated system requirements documentation
+- 🐳 **Fixed Docker port mapping** in docker-compose.yml (3535:3001)
+- 📝 **Enhanced MCP integration documentation** with multi-tool support
+- 🔗 **Updated all API examples** to clarify dev vs Docker port usage
+
+### Fixed
+- 🐛 **Mobile navigation accessibility** - Sidebar now accessible on all screen sizes
+- 🔧 **Docker external port** - Correctly maps to internal port 3001
+
 ## [0.5.0] - 2025-11-06
 
 ### Added - Comprehensive Logging System

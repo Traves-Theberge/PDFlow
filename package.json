@@ -1,6 +1,6 @@
 {
   "name": "pdflow",
-  "version": "0.5.0",
+  "version": "5.1.0",
   "description": "Multimodal PDF-to-structured-data extraction app with CLI support",
   "private": true,
   "scripts": {

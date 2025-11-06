@@ -48,7 +48,7 @@ PDFlow is a modern, full-stack PDF extraction tool that leverages multimodal AI 
 
 ## Prerequisites
 
-- Node.js 18+ 
+- Node.js 20+ (required for Next.js 16)
 - npm or yarn
 - pdftocairo (poppler-utils)
 - Google Gemini API key
@@ -79,10 +79,10 @@ export GEMINI_API_KEY="your-api-key-here"
 # Start with Docker Compose
 docker-compose up -d
 
-# Access at http://localhost:3000
+# Access at http://localhost:3535
 ```
 
-**📦 For complete Docker documentation, see [Docker Deployment Guide](docs/DOCKER.md)**
+**📦 For complete Docker documentation, see [Docker Deployment Guide](https://pdflow.vercel.app/docs/docker)**
 
 ### Option 2: Local Development
 
@@ -99,7 +99,7 @@ npm run dev
 ```
 
 3. **Open the application:**
-   - Navigate to [http://localhost:3000](http://localhost:3000)
+   - Navigate to [http://localhost:3001](http://localhost:3001)
    - Click the settings gear icon in the top right
    - Enter your Google Gemini API key
    - Click "Save API Key"

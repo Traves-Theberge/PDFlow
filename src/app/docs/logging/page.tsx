@@ -8,7 +8,7 @@ export default function LoggingPage() {
 
       <h2>Overview</h2>
       <p>
-        PDFlow v0.5.0+ includes a dual-output logging system that provides both real-time console output
+        PDFlow includes a dual-output logging system that provides both real-time console output
         and persistent file-based logs. Logs are accessible through multiple methods for maximum flexibility.
       </p>
 
@@ -328,11 +328,11 @@ docker container prune`}</code></pre>
 
       <div className="rounded-lg border border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-blue-950 p-6 my-8">
         <p className="text-blue-900 dark:text-blue-100 font-semibold mb-2">
-          📋 Complete Documentation
+          💡 Tip
         </p>
         <p className="text-blue-800 dark:text-blue-200 mb-0">
-          For the most comprehensive logging documentation with additional examples and 
-          troubleshooting scenarios, see <code>docs/LOGGING.md</code> in the project repository.
+          Use the <code>./scripts/view-logs.sh</code> helper script for the easiest log access.
+          It handles both local development and Docker deployments automatically.
         </p>
       </div>
     </>
