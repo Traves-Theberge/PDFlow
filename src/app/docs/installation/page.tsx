@@ -11,7 +11,7 @@ export default function InstallationPage() {
       <h3>Minimum Requirements</h3>
       <ul>
         <li><strong>Operating System</strong>: Linux, macOS, or Windows (WSL2)</li>
-        <li><strong>Node.js</strong>: 18.x or higher</li>
+        <li><strong>Node.js</strong>: 20.x or higher (required for Next.js 16)</li>
         <li><strong>RAM</strong>: 2GB minimum, 4GB recommended</li>
         <li><strong>Disk Space</strong>: 1GB for application + space for PDFs</li>
         <li><strong>Network</strong>: Internet connection for Gemini API</li>
@@ -33,10 +33,10 @@ export default function InstallationPage() {
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Install required packages
-brew install node poppler imagemagick
+brew install node@20 poppler imagemagick
 
 # Verify installation
-node --version    # Should be 18.x or higher
+node --version    # Should be 20.x or higher
 pdftocairo -v    # Should show poppler version
 convert -version # Should show ImageMagick version`}</code></pre>
 
@@ -44,8 +44,8 @@ convert -version # Should show ImageMagick version`}</code></pre>
       <pre><code>{`# Update package list
 sudo apt update
 
-# Install Node.js 18.x
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+# Install Node.js 20.x
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
 
 # Install PDF tools
@@ -183,11 +183,11 @@ docker-compose logs -f
 # Check status
 docker-compose ps
 
-# Should show pdflow container running on port 3000:3000`}</code></pre>
+# Should show pdflow container running on port 3535`}</code></pre>
 
       <h3>Step 4: Verify Docker Installation</h3>
       <pre><code>{`# Check health
-curl http://localhost:3000/api/health
+curl http://localhost:3535/api/health
 
 # View container logs
 docker-compose logs pdflow
@@ -279,17 +279,16 @@ npm run build
 # Verify build
 ls dist/  # Should see server.js and index.js`}</code></pre>
 
-      <h3>Step 2: Configure Claude Desktop</h3>
-      <pre><code>{`# Get full path to built server
-pwd  # Note this path
+      <h3>Step 2: Configure AI Tools</h3>
+      <p>PDFlow MCP server works with multiple AI tools. See the <a href="/docs/ai-tools">MCP Integration</a> guide for detailed setup instructions for:</p>
+      <ul>
+        <li>Claude Desktop</li>
+        <li>Claude Code</li>
+        <li>Cursor</li>
+        <li>VS Code (with Cline extension)</li>
+      </ul>
 
-# Edit Claude config (macOS)
-vim ~/Library/Application\\ Support/Claude/claude_desktop_config.json
-
-# Edit Claude config (Linux)
-vim ~/.config/Claude/claude_desktop_config.json`}</code></pre>
-
-      <h3>Step 3: Add MCP Configuration</h3>
+      <h3>Step 3: Quick MCP Configuration Example</h3>
       <pre><code>{`{
   "mcpServers": {
     "pdflow": {
@@ -303,8 +302,10 @@ vim ~/.config/Claude/claude_desktop_config.json`}</code></pre>
   }
 }`}</code></pre>
 
-      <h3>Step 4: Restart Claude Desktop</h3>
-      <p>Completely quit and restart Claude Desktop for MCP tools to appear.</p>
+      <p><strong>Note:</strong> Use <code>http://localhost:3535</code> if connecting to a Docker deployment.</p>
+
+      <h3>Step 4: Restart Your AI Tool</h3>
+      <p>Completely quit and restart your AI tool for MCP tools to appear.</p>
 
       <h2>Troubleshooting</h2>
 

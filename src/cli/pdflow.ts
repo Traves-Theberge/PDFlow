@@ -30,7 +30,7 @@ const program = new Command();
 program
   .name('pdflow')
   .description('PDFlow - AI-powered PDF extraction CLI')
-  .version('0.3.0');
+  .version('0.5.0');
 
 /**
  * Extract command - Process a PDF file

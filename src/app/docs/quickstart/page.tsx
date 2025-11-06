@@ -8,7 +8,7 @@ export default function QuickStartPage() {
 
       <h2>Prerequisites</h2>
       <ul>
-        <li><strong>Node.js 18+</strong> - <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer">Download</a></li>
+        <li><strong>Node.js 20+</strong> - <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer">Download</a> (required for Next.js 16)</li>
         <li><strong>Gemini API Key</strong> - <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Get one free</a></li>
         <li><strong>PDF files</strong> to process</li>
       </ul>
@@ -45,7 +45,7 @@ docker-compose up -d
 # Check logs
 docker-compose logs -f`}</code></pre>
 
-      <p>Access at <a href="http://localhost:3000">http://localhost:3000</a></p>
+      <p>Access at <a href="http://localhost:3535">http://localhost:3535</a></p>
 
       <h2>Your First Extraction</h2>
 
@@ -93,7 +93,7 @@ npm run pdflow -- extract slides.pdf --pages 1,3,5-10
 npm run pdflow -- extract data.pdf --output ./my-extractions`}</code></pre>
 
       <h3>API</h3>
-      <pre><code>{`# Upload a PDF
+      <pre><code>{`# Upload a PDF (use port 3001 for dev, 3535 for Docker)
 curl -X POST http://localhost:3001/api/upload \\
   -F "file=@document.pdf"
 
@@ -143,7 +143,7 @@ for pdf in ./pdfs/*.pdf; do
 done`}</code></pre>
 
       <h3>With AI Assistants (MCP)</h3>
-      <p>Once configured with Claude Desktop:</p>
+      <p>Once configured with Claude Desktop, Claude Code, Cursor, or VS Code:</p>
       <pre><code>{`User: "Extract the content from ~/Documents/contract.pdf and summarize the key terms"
 
 Claude: [Uses PDFlow MCP tool]
@@ -153,7 +153,7 @@ Claude: [Uses PDFlow MCP tool]
 3. Termination: 30 days notice
 ..."`}</code></pre>
 
-      <p>See <a href="/docs/mcp">MCP Integration</a> for setup.</p>
+      <p>See <a href="/docs/ai-tools">MCP Integration</a> for setup.</p>
 
       <h2>Configuration</h2>
 
@@ -165,8 +165,9 @@ GEMINI_API_KEY=your-google-gemini-api-key
 # Optional
 NODE_ENV=production
 NEXT_TELEMETRY_DISABLED=1
+PORT=3001
 
-# For MCP
+# For MCP (use 3535 for Docker, 3001 for local dev)
 PDFLOW_BASE_URL=http://localhost:3001`}</code></pre>
 
       <h3>Advanced Settings</h3>

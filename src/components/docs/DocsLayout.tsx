@@ -49,6 +49,7 @@ const navigation: DocSection[] = [
     items: [
       { title: 'Security', href: '/docs/security' },
       { title: 'Performance', href: '/docs/performance' },
+      { title: 'Logging & Monitoring', href: '/docs/logging' },
       { title: 'Troubleshooting', href: '/docs/troubleshooting' },
     ],
   },
@@ -58,12 +59,18 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [darkMode, setDarkMode] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     const isDark = typeof window !== 'undefined' ? localStorage.getItem('darkMode') === 'true' : false;
     setDarkMode(isDark);
   }, []);
+
+  // Close mobile menu when navigating
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   const toggleDarkMode = () => {
     const newMode = !darkMode;
@@ -84,13 +91,30 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
       <header className={`sticky top-0 z-50 border-b backdrop-blur-sm ${darkMode ? 'border-neutral-800 bg-black/80' : 'border-neutral-200 bg-white/80'}`}>
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center">
-              <img
-                src="/PDFlow_Logo.png"
-                alt="PDFlow Logo"
-                className={`h-7 w-auto transition-all ${darkMode ? '' : 'invert'}`}
-              />
-            </Link>
+            <div className="flex items-center space-x-4">
+              <Link href="/" className="flex items-center">
+                <img
+                  src="/PDFlow_Logo.png"
+                  alt="PDFlow Logo"
+                  className={`h-7 w-auto transition-all ${darkMode ? '' : 'invert'}`}
+                />
+              </Link>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className={`lg:hidden p-2 rounded-md transition-colors ${darkMode ? 'hover:bg-neutral-800' : 'hover:bg-neutral-100'}`}
+                aria-label="Toggle menu"
+              >
+                <svg className={`w-5 h-5 ${darkMode ? 'text-neutral-400' : 'text-neutral-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {mobileMenuOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+            </div>
 
             {/* Right Side Actions: Grouped navigation */}
             <div className="flex items-center space-x-2">
@@ -140,9 +164,48 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div
+          className="lg:hidden fixed inset-0 z-40 bg-black/50"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Mobile Menu Sidebar */}
+      <aside className={`lg:hidden fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 ease-in-out ${
+        mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+      } ${darkMode ? 'bg-black border-r border-neutral-800' : 'bg-white border-r border-neutral-200'}`}>
+        <nav className="h-full overflow-y-auto p-6 pt-24 space-y-8">
+          {navigation.map((section) => (
+            <div key={section.title}>
+              <h5 className={`font-semibold text-[10px] mb-3 uppercase tracking-[0.1em] ${darkMode ? 'text-white' : 'text-neutral-900'}`}>
+                {section.title}
+              </h5>
+              <ul className="space-y-1.5">
+                {section.items.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={`block text-sm px-3 py-2 rounded-md transition-all ${
+                        pathname === item.href
+                          ? (darkMode ? 'bg-neutral-800 text-white font-medium' : 'bg-neutral-900 text-white font-medium')
+                          : (darkMode ? 'text-neutral-400 hover:text-white hover:bg-neutral-800/50' : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50')
+                      }`}
+                    >
+                      {item.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+      </aside>
+
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="flex gap-12">
-          {/* Sidebar */}
+          {/* Desktop Sidebar */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
             <nav className="sticky top-28 space-y-8 max-h-[calc(100vh-8rem)] overflow-y-auto pr-4">
               {navigation.map((section) => (
