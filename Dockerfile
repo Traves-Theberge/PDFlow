@@ -2,13 +2,14 @@
 # Multi-stage build for optimized production image
 
 # Stage 1: Base image with system dependencies
-FROM node:18-slim AS base
+FROM node:20-slim AS base
 
 # Install system dependencies for PDF processing
 RUN apt-get update && apt-get install -y \
     poppler-utils \
     imagemagick \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -s /usr/bin/convert /usr/bin/magick
 
 WORKDIR /app
 
