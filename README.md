@@ -1,5 +1,7 @@
 ![PDFlow Logo](public/PDFlow_Logo_W_Text.png)
 
+#PDFlow
+
 **Transform PDFs into structured data with AI-powered extraction.**
 
 PDFlow is a modern, full-stack PDF extraction tool that leverages multimodal AI to intelligently extract and structure content from PDF documents. Whether you need documentation in Markdown, data in JSON, or reports in HTML, PDFlow delivers accurate extraction with both web and CLI interfaces.
