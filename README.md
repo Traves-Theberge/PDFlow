@@ -324,6 +324,44 @@ EXPOSE 3000
 CMD ["npm", "start"]
 ```
 
+## Logging & Monitoring
+
+PDFlow v0.5.0+ includes comprehensive logging for debugging and monitoring:
+
+### Viewing Logs
+
+```bash
+# Watch logs in real-time
+./scripts/view-logs.sh --follow
+
+# Show only errors
+./scripts/view-logs.sh --errors
+
+# Filter by session ID
+./scripts/view-logs.sh --session session_123
+
+# View Docker logs
+docker logs -f pdflow
+```
+
+### Log Files
+
+Logs are stored in:
+- **Host**: `./logs/pdflow-YYYY-MM-DD.log`
+- **Container**: `/app/logs/pdflow-YYYY-MM-DD.log`
+- **Docker**: `docker logs pdflow`
+
+### Configuration
+
+Control logging via environment variables:
+```bash
+LOG_LEVEL=info              # debug|info|warn|error|critical
+ENABLE_FILE_LOGGING=true    # Enable file-based logs
+LOG_RETENTION_DAYS=7        # Days to keep logs
+```
+
+**📋 For complete logging documentation, see [docs/LOGGING.md](docs/LOGGING.md)**
+
 ## Troubleshooting
 
 ### Common Issues
@@ -337,15 +375,33 @@ CMD ["npm", "start"]
 3. **"PDF conversion failed"**
    - Ensure PDF is not password-protected
    - Check file size limits
+   - Check logs: `./scripts/view-logs.sh --errors`
 
 4. **"Processing stuck at 0%"**
    - Check browser console for errors
    - Verify API endpoints are responding
+   - Review logs: `./scripts/view-logs.sh --follow`
 
-### Logs
+5. **"Script exited with code 1"**
+   - Check detailed error logs: `grep "Script failed" logs/pdflow-*.log`
+   - Verify ImageMagick and poppler-utils are installed
+   - Review stderr output in logs for specific error messages
 
-- Development: Check terminal output
-- Production: Check Vercel function logs
+### Debugging with Logs
+
+```bash
+# Find errors in today's logs
+./scripts/view-logs.sh --today --errors
+
+# Search for specific errors
+grep "ERROR" logs/pdflow-*.log
+
+# View session timeline
+grep "session_YOUR_SESSION_ID" logs/pdflow-*.log
+
+# Check Docker logs
+docker logs --tail 100 pdflow
+```
 
 ## License
 
