@@ -30,6 +30,7 @@ PDFlow is a modern, full-stack PDF extraction tool that leverages multimodal AI 
 - **📡 REST API**: Complete API for custom integrations
 - **🔐 Security Features**: File validation, command injection prevention, containerization
 - **📚 Full Documentation Site**: Interactive documentation with comprehensive guides and examples
+- **📋 Comprehensive Logging**: Dual-output logging system with file persistence, Docker integration, and advanced filtering
 
 ## Tech Stack
 

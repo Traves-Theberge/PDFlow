@@ -13,7 +13,7 @@ services:
     container_name: pdflow
 
     ports:
-      - "3000:3000"
+      - "3535:3000"
 
     environment:
       # Required: Set your Gemini API key

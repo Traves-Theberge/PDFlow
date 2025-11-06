@@ -5,6 +5,38 @@ All notable changes to PDFlow will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2025-11-06
+
+### Added - Comprehensive Logging System
+- 📋 **Dual-output logging infrastructure** with console and file logging
+- 📁 **Persistent log storage** via Docker volume mount (`./logs` directory)
+- 🐳 **Docker logging driver configuration** with automatic rotation (10MB max per file, 3 files retained)
+- 🛠️ **Log viewer helper script** (`scripts/view-logs.sh`) with filtering options:
+  - Real-time log following (`--follow`)
+  - Error-only filtering (`--errors`)
+  - Session-based filtering (`--session <id>`)
+  - Docker log integration (`--docker`)
+  - Customizable line limits (`--last <n>`)
+- 📚 **Complete logging documentation** (`docs/LOGGING.md`) with:
+  - Log viewing methods and commands
+  - Advanced filtering examples
+  - Performance monitoring guides
+  - Troubleshooting procedures
+  - Configuration reference
+- 🎯 **Environment variable controls**:
+  - `LOG_LEVEL` - Control logging verbosity (debug|info|warn|error|critical)
+  - `ENABLE_FILE_LOGGING` - Toggle file-based logging
+  - `LOG_RETENTION_DAYS` - Configurable log retention (default: 7 days)
+- 🔍 **Enhanced error context capture** for debugging "Script exited with code 1" type errors
+- 📊 **Structured log format** with timestamps, log levels, components, and JSON context
+- 🔄 **Log rotation support** with daily log files (`pdflow-YYYY-MM-DD.log`)
+
+### Changed
+- 📦 Updated `Dockerfile` to create `/app/logs` directory with proper permissions
+- 🐳 Updated `docker-compose.yml` to mount logs volume and configure logging driver
+- 📝 Updated `.gitignore` to exclude logs directory while preserving structure
+- 🔧 Enhanced `pdf-processor.ts` error capture for better shell script debugging
+
 ## [Unreleased] - 2025-01-15
 
 ### Added - Documentation Website (Latest)
