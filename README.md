@@ -1,6 +1,6 @@
 ![PDFlow Logo](public/PDFlow_Logo_W_Text.png)
 
-#PDFlow
+# PDFlow
 
 **Transform PDFs into structured data with AI-powered extraction.**
 
