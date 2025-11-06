@@ -57,6 +57,10 @@ next-env.d.ts
 /test-cli-outputs/*
 !/test-cli-outputs/.gitkeep
 
+# Logs (generated at runtime)
+/logs/*
+!/logs/.gitkeep
+
 # Temporary files
 *.tmp
 *.temp

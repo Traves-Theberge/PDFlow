@@ -219,7 +219,7 @@ curl http://localhost:3001/api/health
 
       <h2>Next Steps</h2>
       <ul>
-        <li><a href="/docs/claude-desktop">Claude Desktop Setup</a> - Detailed configuration guide</li>
+        <li><a href="/docs/ai-tools">AI Tools Setup</a> - Detailed configuration guide for Claude Desktop, Claude Code, Cursor, and VS Code</li>
         <li><a href="/docs/integrations">Custom Integrations</a> - Build your own MCP clients</li>
         <li><a href="/docs/troubleshooting">Troubleshooting</a> - Fix common issues</li>
       </ul>

@@ -1,4 +1,4 @@
-export default function ClaudeDesktopPage() {
+export default function AIToolsPage() {
   return (
     <>
       <h1>AI Tool Configuration</h1>
@@ -269,7 +269,8 @@ npm run dev
 
       <h2>Next Steps</h2>
       <ul>
-        <li><a href="/docs/mcp">MCP Integration</a> - Learn about available tools</li>
+        <li><a href="/docs/mcp">MCP Integration</a> - Learn about available MCP tools and advanced configuration</li>
+        <li><a href="/docs/integrations">Custom Integrations</a> - Build your own integrations</li>
         <li><a href="/docs/troubleshooting">Troubleshooting</a> - Fix common issues</li>
       </ul>
     </>

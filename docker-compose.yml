@@ -25,6 +25,11 @@ services:
       # Optional: Next.js specific
       - NEXT_TELEMETRY_DISABLED=1
 
+      # Logging configuration
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - ENABLE_FILE_LOGGING=true
+      - LOG_RETENTION_DAYS=7
+
     volumes:
       # Persist uploaded PDFs
       - ./uploads:/app/uploads
@@ -35,7 +40,19 @@ services:
       # Persist CLI test outputs
       - ./test-cli-outputs:/app/test-cli-outputs
 
+      # Persist application logs
+      - ./logs:/app/logs
+
     restart: unless-stopped
+
+    # Docker logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service,component"
+        tag: "{{.Name}}/{{.ImageName}}"
 
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]

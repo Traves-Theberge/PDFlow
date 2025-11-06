@@ -52,7 +52,7 @@ RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
 # Create necessary directories with correct permissions
-RUN mkdir -p /app/uploads /app/outputs /app/test-cli-outputs && \
+RUN mkdir -p /app/uploads /app/outputs /app/test-cli-outputs /app/logs && \
     chown -R nextjs:nodejs /app
 
 WORKDIR /app
