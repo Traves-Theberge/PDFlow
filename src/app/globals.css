@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @layer base {
   :root {
@@ -61,16 +62,204 @@
   .gradient-text {
     @apply bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent;
   }
-  
+
   .card-shadow {
     @apply shadow-lg shadow-gray-200/50 dark:shadow-gray-900/50;
   }
-  
+
   .button-primary {
     @apply bg-gray-900 text-white hover:bg-gray-800 transition-colors duration-200;
   }
-  
+
   .button-secondary {
     @apply bg-gray-200 text-gray-900 hover:bg-gray-300 transition-colors duration-200;
+  }
+
+  /* Documentation Prose Styles - Light Mode */
+  .docs-content-light {
+    @apply max-w-none;
+  }
+
+  .docs-content-light h1 {
+    @apply text-4xl font-semibold tracking-tight leading-tight mb-6 mt-0 text-black;
+  }
+
+  .docs-content-light h2 {
+    @apply text-3xl font-semibold tracking-tight leading-tight mt-16 mb-6 pb-3 text-black border-b-2 border-neutral-200;
+  }
+
+  .docs-content-light h3 {
+    @apply text-2xl font-semibold tracking-tight leading-tight mt-12 mb-4 text-black;
+  }
+
+  .docs-content-light h4 {
+    @apply text-xl font-semibold tracking-tight leading-tight mt-10 mb-3 text-black;
+  }
+
+  .docs-content-light p {
+    @apply text-base leading-relaxed my-5 text-neutral-600;
+  }
+
+  .docs-content-light .lead {
+    @apply text-lg leading-relaxed text-neutral-500 mb-8 mt-4;
+  }
+
+  .docs-content-light ul,
+  .docs-content-light ol {
+    @apply my-6 space-y-3 pl-6;
+  }
+
+  .docs-content-light li {
+    @apply text-base leading-relaxed text-neutral-600 pl-2;
+  }
+
+  .docs-content-light li::marker {
+    @apply text-neutral-500;
+  }
+
+  .docs-content-light strong {
+    @apply text-black font-semibold;
+  }
+
+  .docs-content-light code {
+    @apply text-sm px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-900 font-mono font-medium border border-neutral-200;
+  }
+
+  .docs-content-light pre {
+    @apply bg-neutral-50 text-neutral-900 border-2 border-neutral-200 rounded-xl p-5 my-8 overflow-x-auto text-sm leading-relaxed shadow-sm;
+  }
+
+  .docs-content-light pre code {
+    @apply bg-transparent p-0 border-0 text-sm;
+  }
+
+  .docs-content-light a {
+    @apply text-black underline decoration-neutral-400 underline-offset-2 font-medium transition-all decoration-2 hover:decoration-black hover:underline-offset-4;
+  }
+
+  .docs-content-light blockquote {
+    @apply border-l-4 border-neutral-300 pl-6 py-1 italic text-neutral-600 my-6;
+  }
+
+  .docs-content-light hr {
+    @apply border-neutral-200 my-12 border-t-2;
+  }
+
+  .docs-content-light table {
+    @apply text-sm my-8 w-full border-collapse;
+  }
+
+  .docs-content-light thead {
+    @apply border-b-2 border-neutral-300;
+  }
+
+  .docs-content-light th {
+    @apply text-left font-semibold text-black px-4 py-3;
+  }
+
+  .docs-content-light td {
+    @apply text-neutral-600 px-4 py-3 border-t border-neutral-200;
+  }
+
+  .docs-content-light tbody tr:hover {
+    @apply bg-neutral-50;
+  }
+
+  .docs-content-light img {
+    @apply rounded-lg my-8 shadow-md;
+  }
+
+  /* Documentation Prose Styles - Dark Mode */
+  .docs-content-dark {
+    @apply max-w-none;
+  }
+
+  .docs-content-dark h1 {
+    @apply text-4xl font-semibold tracking-tight leading-tight mb-6 mt-0 text-white;
+  }
+
+  .docs-content-dark h2 {
+    @apply text-3xl font-semibold tracking-tight leading-tight mt-16 mb-6 pb-3 text-white border-b-2 border-neutral-800;
+  }
+
+  .docs-content-dark h3 {
+    @apply text-2xl font-semibold tracking-tight leading-tight mt-12 mb-4 text-white;
+  }
+
+  .docs-content-dark h4 {
+    @apply text-xl font-semibold tracking-tight leading-tight mt-10 mb-3 text-white;
+  }
+
+  .docs-content-dark p {
+    @apply text-base leading-relaxed my-5 text-neutral-300;
+  }
+
+  .docs-content-dark .lead {
+    @apply text-lg leading-relaxed text-neutral-400 mb-8 mt-4;
+  }
+
+  .docs-content-dark ul,
+  .docs-content-dark ol {
+    @apply my-6 space-y-3 pl-6;
+  }
+
+  .docs-content-dark li {
+    @apply text-base leading-relaxed text-neutral-300 pl-2;
+  }
+
+  .docs-content-dark li::marker {
+    @apply text-neutral-500;
+  }
+
+  .docs-content-dark strong {
+    @apply text-white font-semibold;
+  }
+
+  .docs-content-dark code {
+    @apply text-sm px-2 py-0.5 rounded-md bg-neutral-800 text-neutral-100 font-mono font-medium border border-neutral-700;
+  }
+
+  .docs-content-dark pre {
+    @apply bg-neutral-900 text-neutral-100 border-2 border-neutral-800 rounded-xl p-5 my-8 overflow-x-auto text-sm leading-relaxed shadow-sm;
+  }
+
+  .docs-content-dark pre code {
+    @apply bg-transparent p-0 border-0 text-sm;
+  }
+
+  .docs-content-dark a {
+    @apply text-white underline decoration-neutral-600 underline-offset-2 font-medium transition-all decoration-2 hover:decoration-white hover:underline-offset-4;
+  }
+
+  .docs-content-dark blockquote {
+    @apply border-l-4 border-neutral-700 pl-6 py-1 italic text-neutral-300 my-6;
+  }
+
+  .docs-content-dark hr {
+    @apply border-neutral-800 my-12 border-t-2;
+  }
+
+  .docs-content-dark table {
+    @apply text-sm my-8 w-full border-collapse;
+  }
+
+  .docs-content-dark thead {
+    @apply border-b-2 border-neutral-700;
+  }
+
+  .docs-content-dark th {
+    @apply text-left font-semibold text-white px-4 py-3;
+  }
+
+  .docs-content-dark td {
+    @apply text-neutral-300 px-4 py-3 border-t border-neutral-800;
+  }
+
+  .docs-content-dark tbody tr:hover {
+    @apply bg-neutral-900/30;
+  }
+
+  .docs-content-dark img {
+    @apply rounded-lg my-8 shadow-md;
   }
 }

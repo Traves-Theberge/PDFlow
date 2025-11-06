@@ -4,10 +4,13 @@
 
 **Transform PDFs into structured data with AI-powered extraction.**
 
-PDFlow is a modern, full-stack PDF extraction tool that leverages multimodal AI to intelligently extract and structure content from PDF documents. Whether you need documentation in Markdown, data in JSON, or reports in HTML, PDFlow delivers accurate extraction with both web and CLI interfaces.
+PDFlow is a modern, full-stack PDF extraction tool that leverages multimodal AI to intelligently extract and structure content from PDF documents. Whether you need documentation in Markdown, data in JSON, or reports in HTML, PDFlow delivers accurate extraction with web UI, CLI, and AI agent integration.
+
+📚 **[View Full Documentation](https://pdflow.vercel.app/docs)** | 🚀 **[Quick Start](https://pdflow.vercel.app/docs/quickstart)** | 🔌 **[API Reference](https://pdflow.vercel.app/docs/api)**
 
 ## Features
 
+### Core Features
 - **PDF Upload**: Intuitive drag-and-drop PDF upload interface
 - **CLI Support**: Headless PDF processing via command-line interface for automation
 - **Image Conversion**: Converts PDF pages to WebP images using pdftocairo
@@ -20,6 +23,13 @@ PDFlow is a modern, full-stack PDF extraction tool that leverages multimodal AI 
 - **Responsive Design**: Mobile-friendly interface with TailwindCSS 4
 - **Type Safety**: Full TypeScript implementation with Zod validation
 - **Session Storage API Keys**: Secure API key management in browser session storage
+
+### New: Deployment & AI Integration
+- **🐳 Docker Support**: Multi-stage builds with production-ready containers
+- **🤖 MCP Server**: Model Context Protocol integration for AI agents (Claude, etc.)
+- **📡 REST API**: Complete API for custom integrations
+- **🔐 Security Features**: File validation, command injection prevention, containerization
+- **📚 Full Documentation Site**: Interactive documentation with comprehensive guides and examples
 
 ## Tech Stack
 
@@ -59,10 +69,26 @@ Download and install [poppler for Windows](httpblog.alivate.com.au/poppler-windo
 
 ## Setup
 
+### Option 1: Docker (Recommended)
+
+```bash
+# Set your API key
+export GEMINI_API_KEY="your-api-key-here"
+
+# Start with Docker Compose
+docker-compose up -d
+
+# Access at http://localhost:3000
+```
+
+**📦 For complete Docker documentation, see [Docker Deployment Guide](docs/DOCKER.md)**
+
+### Option 2: Local Development
+
 1. **Clone the repository and install dependencies:**
 ```bash
 git clone https://github.com/traves-theberge/pdflow.git
-cd pdflow/pdf-intelligence
+cd pdflow
 npm install
 ```
 

@@ -5,6 +5,55 @@ All notable changes to PDFlow will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - 2025-01-15
+
+### Added - Documentation Website (Latest)
+- 📚 Complete documentation website rebuild with 13 comprehensive pages
+- 🎨 Professional docs layout with responsive sidebar navigation and scrolling
+- 🌓 Full light/dark mode support matching main application design
+- 📖 Documentation sections:
+  - Getting Started: Introduction, Quick Start, Installation
+  - Core Features: Web Interface, CLI Usage, API Reference
+  - Deployment: Docker
+  - AI Integration: MCP Server, Claude Desktop, Custom Integrations
+  - Advanced: Security, Performance, Troubleshooting
+- 💅 Custom prose styling for optimal readability in both themes
+- 🖼️ Logo integration with proper color inversion for theme consistency
+- 🔗 Clickable breadcrumbs and navigation with active state highlighting
+- 📱 Mobile-responsive design with hidden sidebar on small screens
+
+### Added - Docker & Deployment
+- 🐳 Multi-stage Dockerfile with production optimizations
+- 📦 Docker Compose configuration with security hardening
+- 📚 Comprehensive Docker deployment guide (700+ lines)
+- 🏥 Health check endpoint (`/api/health`)
+- 🔧 Auto-start systemd service configuration
+
+### Added - MCP Integration
+- 🤖 Model Context Protocol server implementation
+- 🔌 4 MCP tools: extract_pdf, check_status, get_results, health_check
+- 🔐 File path validation and security sandbox
+- 📖 Complete MCP integration guide with Claude Desktop setup
+- ⚡ Proper SDK implementation with TypeScript types
+- 🛡️ Security features: allowed directories, error handling, validation
+
+### Added - Security
+- 🔐 Comprehensive security analysis document
+- 🛡️ File path validation in MCP server
+- 🔒 Docker security hardening (non-root user, read-only filesystem)
+- 📋 Threat model and attack scenario analysis
+- ✅ Security recommendations prioritized by severity
+
+### Changed
+- 🎨 Removed Raspberry Pi and Tailscale documentation sections
+- 📝 Converted all documentation from MDX to TSX for Next.js 16 Turbopack compatibility
+- 🎨 Implemented manual dark mode class switching instead of Tailwind's dark: variant
+- 💅 Created separate `.docs-content-light` and `.docs-content-dark` CSS classes for proper theme support
+- 🔤 Optimized body text colors for better readability (text-neutral-600 in light mode)
+- 📦 Removed @next/mdx and MDX-related dependencies
+- 🎨 Enhanced README with updated documentation links
+- ⚙️ Updated globals.css with comprehensive documentation styling
+
 ## [0.3.0] - 2025-11-05
 
 ### Added
