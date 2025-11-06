@@ -23,7 +23,7 @@ export default function DocsPage() {
         <img
           src="/PDFlow_Logo_W_Text.png"
           alt="PDFlow"
-          className={`h-20 w-auto transition-all ${darkMode ? '' : 'invert'}`}
+          className="h-60 w-auto"
         />
       </div>
 
