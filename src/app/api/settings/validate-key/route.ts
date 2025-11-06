@@ -63,11 +63,14 @@ export async function POST(request: NextRequest) {
       const response = await result.response;
 
       // Verify we received a valid response with text content
-      if (response && response.text) {
-        return NextResponse.json({
-          valid: true,
-          message: 'API key is valid and working',
-        });
+      if (response && typeof response.text === 'function') {
+        const text = response.text();
+        if (text) {
+          return NextResponse.json({
+            valid: true,
+            message: 'API key is valid and working',
+          });
+        }
       }
 
       // Edge case: Response received but no text content

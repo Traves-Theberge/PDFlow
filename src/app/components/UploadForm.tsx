@@ -207,7 +207,7 @@ export const UploadForm: React.FC<UploadFormProps> = ({
 
   return (
     <div className="w-full max-w-xl mx-auto">
-      <div className="bg-white rounded-lg border border-neutral-200 p-6">
+      <div className="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
         <AnimatePresence mode="wait">
           {!file && uploadProgress.status === 'idle' && (
             <div key="drop-zone">
@@ -218,8 +218,8 @@ export const UploadForm: React.FC<UploadFormProps> = ({
                 className={`
                   relative border-2 border-dashed rounded-lg p-16 text-center transition-all duration-200
                   ${isDragging
-                    ? 'border-black bg-neutral-50'
-                    : 'border-neutral-300 hover:border-neutral-400'
+                    ? 'border-black dark:border-white bg-neutral-50 dark:bg-neutral-700'
+                    : 'border-neutral-300 dark:border-neutral-600 hover:border-neutral-400 dark:hover:border-neutral-500'
                   }
                 `}
               >
@@ -233,7 +233,7 @@ export const UploadForm: React.FC<UploadFormProps> = ({
 
                 <div className="pointer-events-none">
                   <svg
-                    className="mx-auto h-10 w-10 text-neutral-400 mb-4"
+                    className="mx-auto h-10 w-10 text-neutral-400 dark:text-neutral-500 mb-4"
                     stroke="currentColor"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -242,10 +242,10 @@ export const UploadForm: React.FC<UploadFormProps> = ({
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                   </svg>
 
-                  <p className="text-sm font-medium text-neutral-900 mb-1">
+                  <p className="text-sm font-medium text-neutral-900 dark:text-white mb-1">
                     {isDragging ? 'Drop file here' : 'Drop PDF or click to upload'}
                   </p>
-                  <p className="text-xs text-neutral-500">
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
                     PDF files only
                   </p>
                 </div>
@@ -255,12 +255,12 @@ export const UploadForm: React.FC<UploadFormProps> = ({
 
           {file && (
             <div key="file-selected">
-              <div className="bg-neutral-50 rounded-lg p-4 mb-4 border border-neutral-200">
+              <div className="bg-neutral-50 dark:bg-neutral-700 rounded-lg p-4 mb-4 border border-neutral-200 dark:border-neutral-600">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="flex-shrink-0">
                       <svg
-                        className="h-7 w-7 text-neutral-900"
+                        className="h-7 w-7 text-neutral-900 dark:text-white"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -272,10 +272,10 @@ export const UploadForm: React.FC<UploadFormProps> = ({
                       </svg>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-neutral-900">
+                      <p className="text-xs font-medium text-neutral-900 dark:text-white">
                         {file.name}
                       </p>
-                      <p className="text-xs text-neutral-500">
+                      <p className="text-xs text-neutral-500 dark:text-neutral-400">
                         {formatFileSize(file.size)}
                       </p>
                     </div>
@@ -283,7 +283,7 @@ export const UploadForm: React.FC<UploadFormProps> = ({
 
                   <button
                     onClick={handleReset}
-                    className="text-neutral-400 hover:text-neutral-600 transition-colors"
+                    className="text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
                     disabled={uploadProgress.status !== 'idle'}
                   >
                     <svg
@@ -305,8 +305,8 @@ export const UploadForm: React.FC<UploadFormProps> = ({
                 <button
                   onClick={handleUpload}
                   disabled={uploadProgress.status !== 'idle'}
-                  className="flex-1 bg-black text-white py-2 px-4 rounded-md text-sm font-medium
-                    hover:bg-neutral-800 disabled:bg-neutral-300 disabled:cursor-not-allowed
+                  className="flex-1 bg-black dark:bg-white text-white dark:text-black py-2 px-4 rounded-md text-sm font-medium
+                    hover:bg-neutral-800 dark:hover:bg-neutral-200 disabled:bg-neutral-300 dark:disabled:bg-neutral-600 disabled:cursor-not-allowed
                     transition-colors duration-200"
                 >
                   {uploadProgress.status === 'uploading' ? 'Uploading...' : 'Upload'}
@@ -315,8 +315,8 @@ export const UploadForm: React.FC<UploadFormProps> = ({
                 <button
                   onClick={handleReset}
                   disabled={uploadProgress.status !== 'idle'}
-                  className="px-4 py-2 border border-neutral-300 rounded-md text-sm font-medium
-                    text-neutral-700 hover:bg-neutral-50 disabled:bg-neutral-100 disabled:cursor-not-allowed
+                  className="px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md text-sm font-medium
+                    text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:bg-neutral-100 dark:disabled:bg-neutral-800 disabled:cursor-not-allowed
                     transition-colors duration-200"
                 >
                   Cancel
@@ -327,27 +327,27 @@ export const UploadForm: React.FC<UploadFormProps> = ({
 
           {uploadProgress.status !== 'idle' && uploadProgress.status !== 'error' && (
             <div key="progress" className="mt-6">
-              <div className="bg-gray-50 rounded-lg p-4">
+              <div className="bg-gray-50 dark:bg-neutral-700 rounded-lg p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">
                     {uploadProgress.message || 'Processing...'}
                   </span>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-gray-500 dark:text-neutral-400">
                     {uploadProgress.progress}%
                   </span>
                 </div>
-                
-                <div className="w-full bg-gray-200 rounded-full h-2">
+
+                <div className="w-full bg-gray-200 dark:bg-neutral-600 rounded-full h-2">
                   <motion.div
-                    className="bg-gray-900 h-2 rounded-full"
+                    className="bg-gray-900 dark:bg-white h-2 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${uploadProgress.progress}%` }}
                     transition={{ duration: 0.3 }}
                   />
                 </div>
-                
+
                 {uploadProgress.totalPages > 0 && (
-                  <p className="text-xs text-gray-500 mt-2">
+                  <p className="text-xs text-gray-500 dark:text-neutral-400 mt-2">
                     Processing {uploadProgress.processedPages} of {uploadProgress.totalPages} pages
                   </p>
                 )}

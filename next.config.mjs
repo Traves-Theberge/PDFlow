@@ -1,5 +1,4 @@
 /** @type {import('next').NextConfig} */
-
 const nextConfig = {
   serverExternalPackages: ['sharp'],
   typescript: {
@@ -8,9 +7,9 @@ const nextConfig = {
   // Fix workspace root issue
   ...(process.env.NODE_ENV === 'development' && {
     turbopack: {
-      root: __dirname,
+      root: import.meta.dirname,
     },
   }),
 };
 
-module.exports = nextConfig;
+export default nextConfig;

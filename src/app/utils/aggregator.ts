@@ -24,7 +24,7 @@ export type AggregatedOutput = z.infer<typeof AggregatedOutputSchema>;
  */
 export async function aggregatePages(
   sessionId: string,
-  format: 'markdown' | 'json' | 'xml' | 'html' | 'yaml' | 'mdx' = 'markdown'
+  format: 'markdown' | 'json' | 'xml' | 'html' | 'yaml' | 'mdx' | 'csv' = 'markdown'
 ): Promise<AggregatedOutput> {
   const startTime = Date.now();
   

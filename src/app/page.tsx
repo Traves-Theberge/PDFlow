@@ -262,59 +262,70 @@ export default function Home() {
               />
             </motion.button>
 
-            {/* Right Side Actions: API status, dark mode, GitHub, settings, reset */}
+            {/* Right Side Actions: Grouped navigation */}
             <div className="flex items-center space-x-2">
-              {/* API Key Status Indicator - Shows if Gemini API key is configured */}
-              <div className={`hidden sm:flex items-center space-x-1.5 px-2.5 py-1 rounded-md border ${darkMode ? 'border-neutral-800' : 'border-neutral-200'}`}>
-                <div className={`w-1.5 h-1.5 rounded-full ${hasApiKey ? (darkMode ? 'bg-white' : 'bg-black') : (darkMode ? 'bg-neutral-700' : 'bg-neutral-300')}`}></div>
-                <span className={`text-xs font-medium ${darkMode ? 'text-neutral-400' : 'text-neutral-600'}`}>
-                  {hasApiKey ? 'Connected' : 'No Key'}
-                </span>
+              {/* Docs & GitHub Group */}
+              <div className="flex items-center space-x-1">
+                <a
+                  href="/docs"
+                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                    darkMode
+                      ? 'text-neutral-400 hover:text-white hover:bg-neutral-800'
+                      : 'text-neutral-600 hover:text-black hover:bg-neutral-100'
+                  }`}
+                  title="View Documentation"
+                >
+                  Docs
+                </a>
+                <a
+                  href="https://github.com/traves-theberge/pdflow"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`p-2 rounded-md transition-colors ${darkMode ? 'hover:bg-neutral-800' : 'hover:bg-neutral-100'}`}
+                  title="View on GitHub"
+                >
+                  <svg className={`w-4 h-4 ${darkMode ? 'text-neutral-400' : 'text-neutral-600'}`} fill="currentColor" viewBox="0 0 24 24">
+                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                  </svg>
+                </a>
               </div>
 
-              {/* Dark Mode Toggle - Sun/Moon icons to switch themes */}
-              <button
-                onClick={toggleDarkMode}
-                className={`p-1.5 rounded-md transition-colors ${darkMode ? 'hover:bg-neutral-900' : 'hover:bg-neutral-100'}`}
-                title="Toggle Dark Mode"
-              >
-                {darkMode ? (
-                  <svg className="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              {/* Divider */}
+              <div className={`h-6 w-px ${darkMode ? 'bg-neutral-800' : 'bg-neutral-200'}`}></div>
+
+              {/* Settings & Dark Mode Group */}
+              <div className="flex items-center space-x-1">
+                <button
+                  onClick={() => setShowSettings(true)}
+                  className={`p-2 rounded-md transition-colors relative ${darkMode ? 'hover:bg-neutral-800' : 'hover:bg-neutral-100'}`}
+                  title="Settings"
+                >
+                  <svg className={`w-4 h-4 ${darkMode ? 'text-neutral-400' : 'text-neutral-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                ) : (
-                  <svg className="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                  </svg>
-                )}
-              </button>
+                  {hasApiKey && (
+                    <span className={`absolute top-1 right-1 w-2 h-2 rounded-full ${darkMode ? 'bg-green-500' : 'bg-green-600'}`}></span>
+                  )}
+                </button>
+                <button
+                  onClick={toggleDarkMode}
+                  className={`p-2 rounded-md transition-colors ${darkMode ? 'hover:bg-neutral-800' : 'hover:bg-neutral-100'}`}
+                  title="Toggle Dark Mode"
+                >
+                  {darkMode ? (
+                    <svg className="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
 
-              {/* GitHub Link - Opens repository in new tab */}
-              <a
-                href="https://github.com/traves-theberge/pdflow"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`p-1.5 rounded-md transition-colors ${darkMode ? 'hover:bg-neutral-900' : 'hover:bg-neutral-100'}`}
-                title="View on GitHub"
-              >
-                <svg className={`w-4 h-4 ${darkMode ? 'text-neutral-400' : 'text-neutral-600'}`} fill="currentColor" viewBox="0 0 24 24">
-                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                </svg>
-              </a>
-
-              {/* Settings Button - Opens API key management modal */}
-              <button
-                onClick={() => setShowSettings(true)}
-                className={`p-1.5 rounded-md transition-colors ${darkMode ? 'hover:bg-neutral-900' : 'hover:bg-neutral-100'}`}
-                title="Settings"
-              >
-                <svg className={`w-4 h-4 ${darkMode ? 'text-neutral-400' : 'text-neutral-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </button>
-
-              {/* Reset Button - Only shown when actively processing a PDF */}
+              {/* Reset Button */}
               {currentSessionId && (
                 <motion.button
                   initial={{ opacity: 0, scale: 0.95 }}
