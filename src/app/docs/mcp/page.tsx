@@ -3,11 +3,19 @@ export default function MCPPage() {
     <>
       <h1>MCP Server Integration</h1>
       <p className="lead">
-        Connect PDFlow with Claude Desktop and other AI assistants via the Model Context Protocol.
+        Connect PDFlow with Claude Desktop, Claude Code, Cursor, VS Code, and other AI assistants via the Model Context Protocol.
       </p>
 
       <h2>What is MCP?</h2>
-      <p>The Model Context Protocol (MCP) allows AI assistants like Claude to interact with external tools and services. With PDFlow's MCP server, Claude can extract PDF content directly from your conversations.</p>
+      <p>The Model Context Protocol (MCP) allows AI assistants to interact with external tools and services. With PDFlow's MCP server, AI assistants can extract PDF content directly from your conversations.</p>
+
+      <h2>Supported AI Tools</h2>
+      <ul>
+        <li><strong>Claude Desktop</strong> - Anthropic's desktop application</li>
+        <li><strong>Claude Code</strong> - Anthropic's CLI for AI-powered coding</li>
+        <li><strong>Cursor</strong> - AI-first code editor</li>
+        <li><strong>VS Code with Cline</strong> - Visual Studio Code with MCP support</li>
+      </ul>
 
       <h2>Quick Start</h2>
 
@@ -16,12 +24,44 @@ export default function MCPPage() {
 npm install
 npm run build`}</code></pre>
 
-      <h3>2. Configure Claude Desktop</h3>
+      <h3>2. Choose Your Configuration</h3>
+
+      <h4>Claude Desktop</h4>
       <p><strong>macOS:</strong></p>
       <pre><code>vim ~/Library/Application\\ Support/Claude/claude_desktop_config.json</code></pre>
 
       <p><strong>Linux:</strong></p>
       <pre><code>vim ~/.config/Claude/claude_desktop_config.json</code></pre>
+
+      <p><strong>Windows:</strong></p>
+      <pre><code>notepad %APPDATA%\Claude\claude_desktop_config.json</code></pre>
+
+      <h4>Claude Code</h4>
+      <p><strong>macOS/Linux:</strong></p>
+      <pre><code>vim ~/.claude/claude_code_config.json</code></pre>
+
+      <p><strong>Windows:</strong></p>
+      <pre><code>notepad %USERPROFILE%\.claude\claude_code_config.json</code></pre>
+
+      <h4>Cursor</h4>
+      <p><strong>macOS:</strong></p>
+      <pre><code>vim ~/Library/Application\\ Support/Cursor/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json</code></pre>
+
+      <p><strong>Linux:</strong></p>
+      <pre><code>vim ~/.config/Cursor/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json</code></pre>
+
+      <p><strong>Windows:</strong></p>
+      <pre><code>notepad %APPDATA%\Cursor\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json</code></pre>
+
+      <h4>VS Code (Cline Extension)</h4>
+      <p><strong>macOS:</strong></p>
+      <pre><code>vim ~/Library/Application\\ Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json</code></pre>
+
+      <p><strong>Linux:</strong></p>
+      <pre><code>vim ~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json</code></pre>
+
+      <p><strong>Windows:</strong></p>
+      <pre><code>notepad %APPDATA%\Code\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json</code></pre>
 
       <h3>3. Add PDFlow Configuration</h3>
       <pre><code>{`{
@@ -37,8 +77,13 @@ npm run build`}</code></pre>
   }
 }`}</code></pre>
 
-      <h3>4. Restart Claude Desktop</h3>
-      <p>Completely quit Claude Desktop (Cmd+Q / Alt+F4) and restart it.</p>
+      <h3>4. Restart Your AI Tool</h3>
+      <ul>
+        <li><strong>Claude Desktop:</strong> Completely quit (Cmd+Q / Alt+F4) and restart</li>
+        <li><strong>Claude Code:</strong> Restart your terminal session</li>
+        <li><strong>Cursor:</strong> Reload window (Cmd/Ctrl+Shift+P → "Developer: Reload Window")</li>
+        <li><strong>VS Code:</strong> Reload window (Cmd/Ctrl+Shift+P → "Developer: Reload Window")</li>
+      </ul>
 
       <h2>Available Tools</h2>
 

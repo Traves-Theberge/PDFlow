@@ -1,22 +1,25 @@
 export default function ClaudeDesktopPage() {
   return (
     <>
-      <h1>Claude Desktop Configuration</h1>
+      <h1>AI Tool Configuration</h1>
       <p className="lead">
-        Step-by-step guide for configuring PDFlow with Claude Desktop.
+        Step-by-step guides for configuring PDFlow with Claude Desktop, Claude Code, Cursor, and VS Code.
       </p>
 
       <h2>Prerequisites</h2>
       <ul>
-        <li>Claude Desktop installed</li>
+        <li>Your preferred AI tool installed (Claude Desktop, Claude Code, Cursor, or VS Code with Cline)</li>
         <li>PDFlow running locally or on accessible server</li>
         <li>MCP server built (<code>cd src/mcp && npm run build</code>)</li>
         <li>Gemini API key</li>
       </ul>
 
-      <h2>Configuration Steps</h2>
+      <h2>Choose Your Tool</h2>
 
-      <h3>1. Locate Config File</h3>
+      <h3>Claude Desktop</h3>
+      <p>Anthropic's official desktop application for Claude.</p>
+
+      <h4>1. Locate Config File</h4>
       <p><strong>macOS:</strong></p>
       <pre><code>~/Library/Application Support/Claude/claude_desktop_config.json</code></pre>
 
@@ -26,7 +29,72 @@ export default function ClaudeDesktopPage() {
       <p><strong>Windows:</strong></p>
       <pre><code>%APPDATA%\Claude\claude_desktop_config.json</code></pre>
 
-      <h3>2. Get Absolute Paths</h3>
+      <h4>2. Restart Instructions</h4>
+      <ul>
+        <li><strong>macOS:</strong> Cmd+Q to quit completely</li>
+        <li><strong>Windows:</strong> Alt+F4 to quit</li>
+        <li><strong>Linux:</strong> Close all windows and quit from system tray</li>
+      </ul>
+
+      <hr />
+
+      <h3>Claude Code</h3>
+      <p>Anthropic's CLI for AI-powered coding in your terminal.</p>
+
+      <h4>1. Locate Config File</h4>
+      <p><strong>macOS/Linux:</strong></p>
+      <pre><code>~/.claude/claude_code_config.json</code></pre>
+
+      <p><strong>Windows:</strong></p>
+      <pre><code>%USERPROFILE%\.claude\claude_code_config.json</code></pre>
+
+      <h4>2. Restart Instructions</h4>
+      <p>Restart your terminal session or start a new Claude Code session.</p>
+
+      <hr />
+
+      <h3>Cursor</h3>
+      <p>AI-first code editor with built-in AI assistance.</p>
+
+      <h4>1. Locate Config File</h4>
+      <p><strong>macOS:</strong></p>
+      <pre><code>~/Library/Application Support/Cursor/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json</code></pre>
+
+      <p><strong>Linux:</strong></p>
+      <pre><code>~/.config/Cursor/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json</code></pre>
+
+      <p><strong>Windows:</strong></p>
+      <pre><code>%APPDATA%\Cursor\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json</code></pre>
+
+      <h4>2. Restart Instructions</h4>
+      <p>Reload window: Cmd/Ctrl+Shift+P → "Developer: Reload Window"</p>
+
+      <hr />
+
+      <h3>VS Code (Cline Extension)</h3>
+      <p>Visual Studio Code with Cline extension for MCP support.</p>
+
+      <h4>1. Install Cline Extension</h4>
+      <pre><code>code --install-extension saoudrizwan.claude-dev</code></pre>
+
+      <h4>2. Locate Config File</h4>
+      <p><strong>macOS:</strong></p>
+      <pre><code>~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json</code></pre>
+
+      <p><strong>Linux:</strong></p>
+      <pre><code>~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json</code></pre>
+
+      <p><strong>Windows:</strong></p>
+      <pre><code>%APPDATA%\Code\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json</code></pre>
+
+      <h4>3. Restart Instructions</h4>
+      <p>Reload window: Cmd/Ctrl+Shift+P → "Developer: Reload Window"</p>
+
+      <hr />
+
+      <h2>Universal Configuration Steps</h2>
+
+      <h3>1. Get Absolute Paths</h3>
       <pre><code>{`# Get PDFlow MCP server path
 cd /path/to/pdflow/src/mcp
 pwd
@@ -35,11 +103,8 @@ pwd
 # Note the full path to dist/server.js:
 # /Users/travis/Development/pdflow/src/mcp/dist/server.js`}</code></pre>
 
-      <h3>3. Edit Config File</h3>
-      <p>Open the config file in your editor:</p>
-      <pre><code>vim ~/Library/Application\\ Support/Claude/claude_desktop_config.json</code></pre>
-
-      <p>Add or merge this configuration:</p>
+      <h3>2. Edit Config File</h3>
+      <p>Open your tool's config file (see paths above) and add or merge this configuration:</p>
       <pre><code>{`{
   "mcpServers": {
     "pdflow": {
@@ -53,34 +118,36 @@ pwd
   }
 }`}</code></pre>
 
-      <h3>4. Replace Placeholders</h3>
+      <h3>3. Replace Placeholders</h3>
       <ul>
-        <li>Replace <code>/FULL/PATH/TO/pdflow</code> with actual path from step 2</li>
+        <li>Replace <code>/FULL/PATH/TO/pdflow</code> with actual path from step 1</li>
         <li>Replace <code>your-gemini-api-key</code> with your actual API key</li>
         <li>Adjust <code>PDFLOW_BASE_URL</code> if using different port</li>
       </ul>
 
-      <h3>5. Restart Claude Desktop</h3>
-      <p>Important: Completely quit Claude Desktop</p>
-      <ul>
-        <li><strong>macOS:</strong> Cmd+Q</li>
-        <li><strong>Windows:</strong> Alt+F4</li>
-        <li><strong>Linux:</strong> Close all windows and quit from system tray</li>
-      </ul>
-      <p>Then reopen Claude Desktop.</p>
+      <h3>4. Restart Your Tool</h3>
+      <p>Restart according to your tool's instructions listed above.</p>
 
       <h2>Verify Installation</h2>
 
-      <h3>Check for Tools Icon</h3>
+      <h3>Check for PDFlow Tools</h3>
+      <p><strong>Claude Desktop / Claude Code:</strong></p>
       <ol>
-        <li>Open new Claude conversation</li>
-        <li>Look for hammer icon (🔨) in input area</li>
-        <li>Click icon to see available tools</li>
+        <li>Start a new conversation</li>
+        <li>Look for hammer/tools icon (🔨) in the interface</li>
+        <li>Click to see available tools</li>
         <li>Should see: <code>pdflow_extract_pdf</code>, <code>pdflow_check_status</code>, <code>pdflow_health_check</code></li>
       </ol>
 
+      <p><strong>Cursor / VS Code:</strong></p>
+      <ol>
+        <li>Open the Cline panel</li>
+        <li>Check MCP status indicator</li>
+        <li>PDFlow tools should be available in the tool list</li>
+      </ol>
+
       <h3>Test with Health Check</h3>
-      <p>In Claude, type:</p>
+      <p>Ask your AI assistant:</p>
       <blockquote>
         Is PDFlow running? Use pdflow_health_check
       </blockquote>
@@ -108,17 +175,25 @@ pwd
         <li>Restart Claude Desktop completely (not just window)</li>
       </ol>
 
-      <h3>Check Claude Logs</h3>
-      <p><strong>macOS:</strong></p>
-      <pre><code>{`tail -f ~/Library/Logs/Claude/mcp*.log
+      <h3>Check Logs</h3>
+      <p><strong>Claude Desktop (macOS):</strong></p>
+      <pre><code>tail -f ~/Library/Logs/Claude/mcp*.log</code></pre>
 
-# Look for errors like:
-# - "Cannot find module"
-# - "ENOENT: no such file or directory"
-# - "Connection refused"`}</code></pre>
-
-      <p><strong>Linux:</strong></p>
+      <p><strong>Claude Desktop (Linux):</strong></p>
       <pre><code>tail -f ~/.config/Claude/logs/mcp*.log</code></pre>
+
+      <p><strong>Claude Code:</strong></p>
+      <pre><code>cat ~/.claude/logs/*.log</code></pre>
+
+      <p><strong>Cursor / VS Code:</strong></p>
+      <p>Check the Cline extension output panel: View → Output → Select "Cline"</p>
+
+      <p>Look for errors like:</p>
+      <ul>
+        <li>"Cannot find module"</li>
+        <li>"ENOENT: no such file or directory"</li>
+        <li>"Connection refused"</li>
+      </ul>
 
       <h3>"Cannot connect to PDFlow service"</h3>
       <pre><code>{`# 1. Check PDFlow is running

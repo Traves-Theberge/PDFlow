@@ -40,7 +40,7 @@ const navigation: DocSection[] = [
     title: 'AI Integration',
     items: [
       { title: 'MCP Server', href: '/docs/mcp' },
-      { title: 'Claude Desktop', href: '/docs/claude-desktop' },
+      { title: 'AI Tools Setup', href: '/docs/claude-desktop' },
       { title: 'Custom Integrations', href: '/docs/integrations' },
     ],
   },
