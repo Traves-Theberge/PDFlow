@@ -70,7 +70,7 @@ npm run build`}</code></pre>
       "command": "node",
       "args": ["/full/path/to/pdflow/src/mcp/dist/server.js"],
       "env": {
-        "PDFLOW_BASE_URL": "http://localhost:3001",
+        "PDFLOW_BASE_URL": "http://localhost:3535",
         "GEMINI_API_KEY": "your-api-key-here"
       }
     }
@@ -122,7 +122,7 @@ npm run build`}</code></pre>
 
       <h3>Environment Variables</h3>
       <ul>
-        <li><code>PDFLOW_BASE_URL</code> - URL of your PDFlow server (default: http://localhost:3001)</li>
+        <li><code>PDFLOW_BASE_URL</code> - URL of your PDFlow server (default: http://localhost:3535)</li>
         <li><code>GEMINI_API_KEY</code> - Your Google Gemini API key</li>
       </ul>
 
@@ -181,7 +181,7 @@ npm run build`}</code></pre>
 
       <h3>"Cannot connect to PDFlow service"</h3>
       <pre><code>{`# Verify PDFlow is running
-curl http://localhost:3001/api/health
+curl http://localhost:3535/api/health
 
 # Should return: {"status":"ok"}`}</code></pre>
 
@@ -202,7 +202,7 @@ curl http://localhost:3001/api/health
       "command": "node",
       "args": ["/path/to/mcp/dist/server.js"],
       "env": {
-        "PDFLOW_BASE_URL": "http://localhost:3001",
+        "PDFLOW_BASE_URL": "http://localhost:3535",
         "GEMINI_API_KEY": "your-key"
       }
     },

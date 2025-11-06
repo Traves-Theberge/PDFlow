@@ -28,14 +28,14 @@ docker build -t pdflow:latest .
 # 3. Run the container
 docker run -d \
   --name pdflow \
-  -p 3001:3000 \
+  -p 3535:3000 \
   -e GEMINI_API_KEY="your-api-key-here" \
   -v pdflow-uploads:/app/uploads \
   -v pdflow-outputs:/app/outputs \
   pdflow:latest
 
 # 4. Verify it's running
-curl http://localhost:3001/api/health
+curl http://localhost:3535/api/health
 ```
 
 ## Prerequisites
@@ -93,7 +93,7 @@ FROM base AS runner
 ```bash
 docker run -d \
   --name pdflow \
-  -p 3001:3000 \
+  -p 3535:3000 \
   -e GEMINI_API_KEY="your-api-key-here" \
   pdflow:latest
 ```
@@ -104,7 +104,7 @@ docker run -d \
 docker run -d \
   --name pdflow \
   --restart unless-stopped \
-  -p 3001:3000 \
+  -p 3535:3000 \
   -e GEMINI_API_KEY="your-api-key-here" \
   -e NODE_ENV=production \
   -e PORT=3000 \
@@ -125,7 +125,7 @@ docker run -d \
 ```bash
 docker run -it \
   --name pdflow-dev \
-  -p 3001:3000 \
+  -p 3535:3000 \
   -e GEMINI_API_KEY="your-api-key-here" \
   -v $(pwd):/app \
   pdflow:latest \
@@ -173,7 +173,7 @@ services:
     container_name: pdflow
     restart: unless-stopped
     ports:
-      - "3001:3000"
+      - "3535:3000"
     environment:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - NODE_ENV=production
@@ -283,13 +283,13 @@ The container exposes port `3000` internally. Map it to any external port:
 
 ```bash
 # Map to port 3001
-docker run -p 3001:3000 pdflow:latest
+docker run -p 3535:3000 pdflow:latest
 
 # Map to port 80
 docker run -p 80:3000 pdflow:latest
 
 # Map to specific interface
-docker run -p 127.0.0.1:3001:3000 pdflow:latest
+docker run -p 127.0.0.1:3535:3000 pdflow:latest
 ```
 
 ### Custom Network
@@ -302,7 +302,7 @@ docker network create pdflow-network
 docker run -d \
   --name pdflow \
   --network pdflow-network \
-  -p 3001:3000 \
+  -p 3535:3000 \
   pdflow:latest
 ```
 
@@ -314,7 +314,7 @@ server {
     server_name pdflow.example.com;
 
     location / {
-        proxy_pass http://localhost:3001;
+        proxy_pass http://localhost:3535;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -345,7 +345,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 docker inspect --format='{{.State.Health.Status}}' pdflow
 
 # Check health via API
-curl http://localhost:3001/api/health
+curl http://localhost:3535/api/health
 ```
 
 ### Health Check Response
@@ -434,7 +434,7 @@ docker logs pdflow
 
 **Common issues:**
 - Missing `GEMINI_API_KEY` environment variable
-- Port already in use: Change `-p 3002:3000`
+- Port already in use: Change `-p 3535:3000`
 - Insufficient memory: Increase Docker resources
 
 ### API Not Responding
@@ -486,7 +486,7 @@ docker exec pdflow chown -R nextjs:nodejs /app/uploads /app/outputs
 **Test connectivity:**
 ```bash
 # From host to container
-curl http://localhost:3001/api/health
+curl http://localhost:3535/api/health
 
 # From container to external
 docker exec pdflow curl https://google.com
@@ -555,7 +555,7 @@ npm install
 npm run build
 
 # Configure MCP to use Docker API
-export PDFLOW_BASE_URL=http://localhost:3001
+export PDFLOW_BASE_URL=http://localhost:3535
 export GEMINI_API_KEY="your-key-here"
 node dist/server.js
 ```

@@ -111,7 +111,7 @@ pwd
       "command": "node",
       "args": ["/FULL/PATH/TO/pdflow/src/mcp/dist/server.js"],
       "env": {
-        "PDFLOW_BASE_URL": "http://localhost:3001",
+        "PDFLOW_BASE_URL": "http://localhost:3535",
         "GEMINI_API_KEY": "your-gemini-api-key"
       }
     }
@@ -155,7 +155,7 @@ pwd
       <p>Expected response:</p>
       <pre><code>{`{
   "status": "ok",
-  "pdflowUrl": "http://localhost:3001",
+  "pdflowUrl": "http://localhost:3535",
   "pdflowStatus": "ok"
 }`}</code></pre>
 
@@ -197,7 +197,7 @@ pwd
 
       <h3>"Cannot connect to PDFlow service"</h3>
       <pre><code>{`# 1. Check PDFlow is running
-curl http://localhost:3001/api/health
+curl http://localhost:3535/api/health
 
 # 2. If not running, start it
 cd /path/to/pdflow
@@ -232,7 +232,7 @@ npm run dev
       "command": "node",
       "args": ["/Users/travis/Development/pdflow/src/mcp/dist/server.js"],
       "env": {
-        "PDFLOW_BASE_URL": "http://localhost:3001",
+        "PDFLOW_BASE_URL": "http://localhost:3535",
         "GEMINI_API_KEY": "AIza..."
       }
     }
@@ -246,7 +246,7 @@ npm run dev
       "command": "node",
       "args": ["/home/username/pdflow/src/mcp/dist/server.js"],
       "env": {
-        "PDFLOW_BASE_URL": "http://localhost:3001",
+        "PDFLOW_BASE_URL": "http://localhost:3535",
         "GEMINI_API_KEY": "AIza..."
       }
     }

@@ -17,14 +17,14 @@ docker build -t pdflow:latest .
 # Run container
 docker run -d \\
   --name pdflow \\
-  -p 3001:3000 \\
+  -p 3535:3000 \\
   -e GEMINI_API_KEY="your-api-key-here" \\
   -v pdflow-uploads:/app/uploads \\
   -v pdflow-outputs:/app/outputs \\
   pdflow:latest
 
 # Verify it's running
-curl http://localhost:3001/api/health`}</code></pre>
+curl http://localhost:3535/api/health`}</code></pre>
 
       <h2>Prerequisites</h2>
       <ul>
@@ -103,7 +103,7 @@ docker --version`}</code></pre>
       <h3>Basic Run</h3>
       <pre><code>{`docker run -d \\
   --name pdflow \\
-  -p 3001:3000 \\
+  -p 3535:3000 \\
   -e GEMINI_API_KEY="your-api-key-here" \\
   pdflow:latest`}</code></pre>
 
@@ -111,7 +111,7 @@ docker --version`}</code></pre>
       <pre><code>{`docker run -d \\
   --name pdflow \\
   --restart unless-stopped \\
-  -p 3001:3000 \\
+  -p 3535:3000 \\
   -e GEMINI_API_KEY="your-api-key-here" \\
   -e NODE_ENV=production \\
   -v pdflow-uploads:/app/uploads \\
@@ -132,7 +132,7 @@ services:
     container_name: pdflow
     restart: unless-stopped
     ports:
-      - "3001:3000"
+      - "3535:3000"
     environment:
       - GEMINI_API_KEY=\${GEMINI_API_KEY}
       - NODE_ENV=production
@@ -285,7 +285,7 @@ docker run --rm \\
 docker inspect --format='{{.State.Health.Status}}' pdflow
 
 # Via API
-curl http://localhost:3001/api/health`}</code></pre>
+curl http://localhost:3535/api/health`}</code></pre>
 
       <h3>Expected Response</h3>
       <pre><code>{`{
@@ -304,7 +304,7 @@ npm install
 npm run build
 
 # Configure to use Docker API
-export PDFLOW_BASE_URL=http://localhost:3001
+export PDFLOW_BASE_URL=http://localhost:3535
 export GEMINI_API_KEY="your-key-here"
 node dist/server.js`}</code></pre>
 
@@ -335,7 +335,7 @@ node dist/server.js`}</code></pre>
     server_name pdflow.example.com;
 
     location / {
-        proxy_pass http://localhost:3001;
+        proxy_pass http://localhost:3535;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -355,7 +355,7 @@ docker logs pdflow
 
 # Common issues:
 # - Missing GEMINI_API_KEY
-# - Port already in use (change -p 3002:3000)
+# - Port already in use (change -p 3535:3000)
 # - Insufficient memory`}</code></pre>
 
       <h3>API Not Responding</h3>
