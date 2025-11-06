@@ -7,7 +7,11 @@ export default function APIPage() {
       </p>
 
       <h2>Base URL</h2>
+      <p><strong>Local development:</strong></p>
       <pre><code>http://localhost:3001</code></pre>
+
+      <p><strong>Docker deployment:</strong></p>
+      <pre><code>http://localhost:3535</code></pre>
 
       <h2>Authentication</h2>
       <p>PDFlow requires a Gemini API key for PDF extraction. The key should be set in the environment variable <code>GEMINI_API_KEY</code> or provided via the settings modal in the web interface.</p>

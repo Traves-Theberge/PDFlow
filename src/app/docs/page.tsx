@@ -100,7 +100,7 @@ npm run pdflow -- extract document.pdf --format markdown --aggregate`}</code></p
       <pre><code>{`# Quick start
 docker-compose up -d
 
-# Access at http://localhost:3000`}</code></pre>
+# Access at http://localhost:3535`}</code></pre>
 
       <h2>Use Cases</h2>
 
