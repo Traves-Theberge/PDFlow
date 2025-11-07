@@ -62,8 +62,7 @@ export default function DocsPage() {
         <li><strong>Web Interface</strong> - Use directly in your browser</li>
         <li><strong>CLI</strong> - Automate with command-line tools</li>
         <li><strong>Docker</strong> - Deploy anywhere with containers</li>
-        <li><strong>Raspberry Pi</strong> - Run on low-power devices</li>
-        <li><strong>Tailscale</strong> - Secure remote access</li>
+        <li><strong>API</strong> - RESTful API for custom integrations</li>
       </ul>
 
       <h3>AI Agent Integration</h3>

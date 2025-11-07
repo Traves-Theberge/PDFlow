@@ -444,12 +444,12 @@ async function handleHealthCheck() {
             status: 'error',
             pdflowUrl: PDFLOW_BASE_URL,
             error: error instanceof Error ? error.message : String(error),
-            message: 'Cannot connect to PDFlow service. Make sure it is running and accessible via Tailscale.',
+            message: 'Cannot connect to PDFlow service. Make sure it is running and accessible.',
             troubleshooting: [
                 `1. Check if PDFlow is running: curl ${PDFLOW_BASE_URL}/api/health`,
-                '2. Verify Tailscale connection: tailscale status',
-                `3. Ping Raspberry Pi: ping ${PDFLOW_BASE_URL.match(/\/\/([^:]+)/)?.[1]}`,
-                '4. Check Docker on Pi: ssh pi@<tailscale-ip> "docker ps"',
+                `2. Verify the server is accessible: ping ${PDFLOW_BASE_URL.match(/\/\/([^:]+)/)?.[1]}`,
+                '3. Check Docker logs: docker logs pdflow',
+                '4. Verify port configuration and firewall settings',
             ],
         };
         return {
