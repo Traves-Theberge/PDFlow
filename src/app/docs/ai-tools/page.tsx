@@ -111,18 +111,20 @@ pwd
       "command": "node",
       "args": ["/FULL/PATH/TO/pdflow/src/mcp/dist/server.js"],
       "env": {
-        "PDFLOW_BASE_URL": "http://localhost:3535",
-        "GEMINI_API_KEY": "your-gemini-api-key"
+        "PDFLOW_BASE_URL": "http://localhost:3535"
       }
     }
   }
 }`}</code></pre>
 
+      <p><strong>Note:</strong> The MCP server only needs to know where PDFlow is running. Your Gemini API key should be configured in PDFlow itself (via .env file or Docker environment), not in the MCP config.</p>
+
       <h3>3. Replace Placeholders</h3>
       <ul>
         <li>Replace <code>/FULL/PATH/TO/pdflow</code> with actual path from step 1</li>
-        <li>Replace <code>your-gemini-api-key</code> with your actual API key</li>
-        <li>Adjust <code>PDFLOW_BASE_URL</code> if using different port</li>
+        <li>Adjust <code>PDFLOW_BASE_URL</code> if using different port or remote server</li>
+        <li>Use <code>http://localhost:3001</code> for local development</li>
+        <li>Use <code>http://localhost:3535</code> for Docker deployment</li>
       </ul>
 
       <h3>4. Restart Your Tool</h3>
@@ -225,29 +227,27 @@ npm run dev
 
       <h2>Example Configurations</h2>
 
-      <h3>macOS (Local)</h3>
+      <h3>macOS (Docker)</h3>
       <pre><code>{`{
   "mcpServers": {
     "pdflow": {
       "command": "node",
       "args": ["/Users/travis/Development/pdflow/src/mcp/dist/server.js"],
       "env": {
-        "PDFLOW_BASE_URL": "http://localhost:3535",
-        "GEMINI_API_KEY": "AIza..."
+        "PDFLOW_BASE_URL": "http://localhost:3535"
       }
     }
   }
 }`}</code></pre>
 
-      <h3>Linux (Local)</h3>
+      <h3>Linux (Local Development)</h3>
       <pre><code>{`{
   "mcpServers": {
     "pdflow": {
       "command": "node",
       "args": ["/home/username/pdflow/src/mcp/dist/server.js"],
       "env": {
-        "PDFLOW_BASE_URL": "http://localhost:3535",
-        "GEMINI_API_KEY": "AIza..."
+        "PDFLOW_BASE_URL": "http://localhost:3001"
       }
     }
   }
@@ -260,8 +260,7 @@ npm run dev
       "command": "node",
       "args": ["/path/to/pdflow/src/mcp/dist/server.js"],
       "env": {
-        "PDFLOW_BASE_URL": "http://192.168.1.100:3001",
-        "GEMINI_API_KEY": "AIza..."
+        "PDFLOW_BASE_URL": "http://192.168.1.100:3535"
       }
     }
   }

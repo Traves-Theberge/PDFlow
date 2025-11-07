@@ -295,14 +295,13 @@ ls dist/  # Should see server.js and index.js`}</code></pre>
       "command": "node",
       "args": ["/full/path/to/pdflow/src/mcp/dist/server.js"],
       "env": {
-        "PDFLOW_BASE_URL": "http://localhost:3001",
-        "GEMINI_API_KEY": "your-api-key-here"
+        "PDFLOW_BASE_URL": "http://localhost:3001"
       }
     }
   }
 }`}</code></pre>
 
-      <p><strong>Note:</strong> Use <code>http://localhost:3535</code> if connecting to a Docker deployment.</p>
+      <p><strong>Note:</strong> Use <code>http://localhost:3535</code> if connecting to a Docker deployment. The MCP server only needs the PDFlow URL - your Gemini API key should be configured in PDFlow itself (via .env or Docker).</p>
 
       <h3>Step 4: Restart Your AI Tool</h3>
       <p>Completely quit and restart your AI tool for MCP tools to appear.</p>

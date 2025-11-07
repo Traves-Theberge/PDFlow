@@ -25,9 +25,9 @@ import path from 'path';
 /**
  * Configuration
  * Set via environment variables or defaults
+ * Note: GEMINI_API_KEY should be configured in PDFlow itself, not here
  */
-const PDFLOW_BASE_URL = process.env.PDFLOW_BASE_URL || 'http://100.64.0.2:3000';
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const PDFLOW_BASE_URL = process.env.PDFLOW_BASE_URL || 'http://localhost:3001';
 
 /**
  * Security: Allowed directories for PDF access
@@ -497,16 +497,11 @@ async function handleHealthCheck() {
  * Start the server
  */
 async function main() {
-  // Validate configuration
-  if (!GEMINI_API_KEY) {
-    console.error('Warning: GEMINI_API_KEY not set. PDFlow may not function correctly.');
-  }
-
   console.error(`PDFlow MCP Server v1.0.0`);
   console.error(`PDFlow URL: ${PDFLOW_BASE_URL}`);
-  console.error(`API Key configured: ${GEMINI_API_KEY ? 'Yes' : 'No (Warning!)'}`);
-  console.error(`Allowed directories: ${ALLOWED_DIRECTORIES.join(', ')}`);
+  console.error(`Allowed directories: ${ALLOWED_DIRECTORIES.join(', ') || 'None (all paths allowed)'}`);
   console.error('');
+  console.error('Note: Gemini API key should be configured in PDFlow, not in MCP config');
   console.error('Starting MCP server on stdio...');
 
   const transport = new StdioServerTransport();
