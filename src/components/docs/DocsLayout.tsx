@@ -96,7 +96,8 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
                 <img
                   src="/PDFlow_Logo.png"
                   alt="PDFlow Logo"
-                  className={`h-7 w-auto transition-all ${darkMode ? '' : 'invert'}`}
+                  className="h-7 w-auto transition-all"
+                  style={{ filter: darkMode ? 'none' : 'brightness(0)' }}
                 />
               </Link>
 

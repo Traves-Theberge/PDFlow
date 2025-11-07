@@ -85,6 +85,20 @@ docker --version`}</code></pre>
       <h3>Standard Build</h3>
       <pre><code>{`docker build -t pdflow:latest .`}</code></pre>
 
+      <h3>Build with Host User Permissions (Recommended)</h3>
+      <p>
+        To avoid permission issues with volume-mounted directories, build the image with your host user's UID/GID.
+        This ensures the container can write to directories mounted from your host system:
+      </p>
+      <pre><code>{`# Build with your user's UID/GID
+docker build \\
+  --build-arg USER_ID=$(id -u) \\
+  --build-arg GROUP_ID=$(id -g) \\
+  -t pdflow:latest .
+
+# Or use Docker Compose (automatically passes USER_ID and GROUP_ID)
+USER_ID=$(id -u) GROUP_ID=$(id -g) docker compose build`}</code></pre>
+
       <h3>Build with Custom Tag</h3>
       <pre><code>{`docker build -t pdflow:v1.0.0 .`}</code></pre>
 
@@ -349,6 +363,22 @@ node dist/server.js`}</code></pre>
 
       <h2>Troubleshooting</h2>
 
+      <h3>Permission Denied Errors</h3>
+      <p>
+        If you see <code>EACCES: permission denied</code> errors when the container tries to write to mounted volumes:
+      </p>
+      <pre><code>{`# Solution 1: Rebuild with your user's UID/GID (recommended)
+USER_ID=$(id -u) GROUP_ID=$(id -g) docker compose build
+USER_ID=$(id -u) GROUP_ID=$(id -g) docker compose up -d
+
+# Solution 2: Fix permissions on existing directories
+chmod -R 777 uploads outputs logs test-cli-outputs
+docker compose restart
+
+# Solution 3: Check container user matches host user
+docker exec pdflow id
+# Should show uid=1000 (or your user's UID)`}</code></pre>
+
       <h3>Container Won't Start</h3>
       <pre><code>{`# Check logs
 docker logs pdflow
@@ -356,7 +386,8 @@ docker logs pdflow
 # Common issues:
 # - Missing GEMINI_API_KEY
 # - Port already in use (change -p 3535:3000)
-# - Insufficient memory`}</code></pre>
+# - Insufficient memory
+# - User creation failed (check if UID already exists)`}</code></pre>
 
       <h3>API Not Responding</h3>
       <pre><code>{`# Check container status

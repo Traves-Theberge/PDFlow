@@ -76,11 +76,14 @@ Download and install [poppler for Windows](httpblog.alivate.com.au/poppler-windo
 # Set your API key
 export GEMINI_API_KEY="your-api-key-here"
 
-# Start with Docker Compose
-docker-compose up -d
+# Build and start with Docker Compose (includes proper user permissions)
+USER_ID=$(id -u) GROUP_ID=$(id -g) docker-compose build
+USER_ID=$(id -u) GROUP_ID=$(id -g) docker-compose up -d
 
 # Access at http://localhost:3535
 ```
+
+**Note:** Building with `USER_ID` and `GROUP_ID` ensures the container user matches your host user, preventing permission issues with mounted volumes.
 
 **📦 For complete Docker documentation, see [Docker Deployment Guide](https://pdflow.vercel.app/docs/docker)**
 

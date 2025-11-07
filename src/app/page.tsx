@@ -258,7 +258,8 @@ export default function Home() {
               <img
                 src="/PDFlow_Logo.png"
                 alt="PDFlow Logo"
-                className={`h-7 w-auto transition-all ${darkMode ? '' : 'invert'}`}
+                className="h-7 w-auto transition-all"
+                style={{ filter: darkMode ? 'none' : 'brightness(0)' }}
               />
             </motion.button>
 
@@ -369,7 +370,8 @@ export default function Home() {
                     <img
                       src="/PDFlow_Logo_W_Text.png"
                       alt="PDFlow"
-                      className={`h-20 w-auto transition-all ${darkMode ? '' : 'invert'}`}
+                      className="h-20 w-auto transition-all"
+                      style={{ filter: darkMode ? 'none' : 'brightness(0)' }}
                     />
                   </motion.div>
 

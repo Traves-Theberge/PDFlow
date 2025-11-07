@@ -49,6 +49,7 @@ if (!ALLOW_ALL_DIRECTORIES && ALLOWED_DIRECTORIES.length === 0) {
   const homeDir = process.env.HOME || process.env.USERPROFILE || '';
   ALLOWED_DIRECTORIES.push(
     process.cwd(), // Current working directory (where AI tool was launched)
+    homeDir,       // Entire home directory (for flexibility)
     path.join(homeDir, 'Documents'),
     path.join(homeDir, 'Downloads'),
     path.join(homeDir, 'Desktop')
@@ -161,7 +162,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             outputPath: {
               type: 'string',
-              description: 'Optional local path to save the extracted content. Can be absolute or relative. If directory, generates filename. Example: "./output.md" or "./outputs/"',
+              description: 'Optional local path to save the extracted content. Can be absolute or relative. If directory, generates filename. Special values: "same" saves to same directory as input PDF, "." or "./" saves to current directory. Examples: "./output.md", "./outputs/", "same", "~/Desktop/extracted.md"',
             },
           },
           required: ['pdfPath'],
@@ -335,7 +336,7 @@ async function handleExtractPdf(args: ExtractPdfArgs) {
   if (processResult.status === 'completed' && aggregate) {
     try {
       const resultsResponse = await fetchWithError(
-        `${PDFLOW_BASE_URL}/api/outputs/${sessionId}/aggregated.${format}`
+        `${PDFLOW_BASE_URL}/api/outputs/${sessionId}/full.${format}`
       );
 
       if (resultsResponse.ok) {
@@ -352,7 +353,17 @@ async function handleExtractPdf(args: ExtractPdfArgs) {
     let savedFilePath: string | undefined;
     if (outputPath) {
       try {
-        const resolvedPath = path.resolve(outputPath);
+        let resolvedPath: string;
+        
+        // Special case: "same" means save to same directory as input PDF
+        if (outputPath.toLowerCase() === 'same') {
+          const pdfDir = path.dirname(path.resolve(pdfPath));
+          const pdfBasename = path.basename(pdfPath, '.pdf');
+          resolvedPath = path.join(pdfDir, `${pdfBasename}.${format}`);
+        } else {
+          resolvedPath = path.resolve(outputPath);
+        }
+        
         let finalPath = resolvedPath;
 
         // If path is a directory, generate filename
@@ -471,10 +482,10 @@ async function handleCheckStatus(args: CheckStatusArgs) {
 async function handleGetResults(args: GetResultsArgs) {
   const { sessionId, format = 'markdown' } = args;
 
-  // Try to get aggregated results first
+  // Try to get aggregated results first (file is named 'full' not 'aggregated')
   const aggregatedUrl = `${PDFLOW_BASE_URL}/api/outputs/${encodeURIComponent(
     sessionId
-  )}/aggregated.${format}`;
+  )}/full.${format}`;
   const response = await fetchWithError(aggregatedUrl);
 
   if (!response.ok) {

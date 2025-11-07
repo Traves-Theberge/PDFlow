@@ -5,6 +5,34 @@ All notable changes to PDFlow will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.1.1] - 2025-11-07
+
+### Fixed - MCP & Docker Improvements
+- 🐛 **Fixed MCP `get_results` 404 error**
+  - Changed API call from `aggregated.{format}` to `full.{format}` to match actual output filenames
+  - Updated both `handleGetResults` and `handleExtractPdf` functions
+- 🐛 **Fixed Docker permission issues with mounted volumes**
+  - Added `USER_ID` and `GROUP_ID` build arguments to Dockerfile
+  - Container now runs with host user's UID/GID to prevent EACCES errors
+  - Updated docker-compose.yml to pass host user IDs automatically
+  - Fixed user/group creation logic to handle existing system users
+- 🔧 **Removed obsolete `version: '3.8'` from docker-compose.yml**
+
+### Added - MCP Features
+- ✨ **"Same directory" output feature for MCP**
+  - Use `outputPath: "same"` to save extracted content next to source PDF
+  - Example: PDF at `/home/user/docs/report.pdf` → Output at `/home/user/docs/report.md`
+- 📁 **Expanded MCP allowed directories**
+  - Now allows access to entire home directory by default (not just Documents/Downloads/Desktop)
+  - Users can extract PDFs from any subdirectory under `~/`
+  - Custom directories still configurable via `ALLOWED_DIRECTORIES` env var
+
+### Changed - Documentation
+- 📚 **Updated Docker deployment guide** with USER_ID/GROUP_ID build instructions
+- 📚 **Added permission troubleshooting section** to Docker documentation
+- 📚 **Updated README** with proper docker-compose build commands
+- 📚 **Enhanced MCP documentation** with "same" directory examples
+
 ## [5.1.0] - 2025-11-06
 
 ### Added - Mobile Navigation & Documentation Updates

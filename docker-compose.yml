@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   pdflow:
     build:
@@ -7,6 +5,8 @@ services:
       dockerfile: Dockerfile
       args:
         NODE_ENV: production
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
 
     image: pdflow:latest
 

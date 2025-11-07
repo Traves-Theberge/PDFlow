@@ -100,7 +100,15 @@ npm run build`}</code></pre>
         <li><code>pdfPath</code> (string, required) - Absolute path to PDF file</li>
         <li><code>format</code> (string, optional) - Output format: markdown, json, xml, yaml, html, mdx. Default: markdown</li>
         <li><code>aggregate</code> (boolean, optional) - Combine all pages into one file. Default: true</li>
-        <li><code>outputPath</code> (string, optional) - Local path to save extracted content. Can be absolute or relative. If a directory is provided, a filename will be auto-generated. If no extension is provided, the appropriate extension based on format will be added.</li>
+        <li><code>outputPath</code> (string, optional) - Local path to save extracted content. Special values:
+          <ul>
+            <li><code>"same"</code> - Save to same directory as input PDF</li>
+            <li><code>"."</code> or <code>"./"</code> - Save to current working directory</li>
+            <li>Absolute path (e.g., <code>/home/user/outputs/file.md</code>)</li>
+            <li>Relative path (e.g., <code>./outputs/</code>)</li>
+            <li>Directory path - Auto-generates filename based on PDF name</li>
+          </ul>
+        </li>
       </ul>
 
       <p><strong>Returns:</strong> The complete extracted content in the specified format, plus <code>savedTo</code> field with absolute path if <code>outputPath</code> was provided</p>
@@ -164,12 +172,21 @@ npm run build`}</code></pre>
         </li>
         <li><code>ALLOWED_DIRECTORIES</code> (optional) - Control which directories can access PDFs
           <ul>
-            <li>Default: Current directory + Documents/Downloads/Desktop</li>
+            <li>Default: Home directory + Current directory + Documents/Downloads/Desktop</li>
             <li>Custom: Colon-separated paths (e.g., <code>/home/user/projects:/home/user/work</code>)</li>
             <li>Allow all: <code>*</code> (less secure, but more flexible)</li>
           </ul>
         </li>
       </ul>
+
+      <h3>Directory Access</h3>
+      <p><strong>Input PDFs:</strong> By default, the MCP server can read PDF files from:</p>
+      <ul>
+        <li>Your entire home directory (<code>~</code>)</li>
+        <li>Current working directory (where AI tool was launched)</li>
+        <li>Specifically: <code>~/Documents</code>, <code>~/Downloads</code>, <code>~/Desktop</code></li>
+      </ul>
+      <p><strong>Output Files:</strong> Extracted content can be saved to any location on your filesystem using the <code>outputPath</code> parameter. The MCP server runs on your host machine (not in Docker), so it has full access to your local filesystem for both reading and writing.</p>
 
       <h3>Important Notes</h3>
       <ul>
@@ -191,12 +208,23 @@ npm run build`}</code></pre>
         Extract invoice.pdf in JSON format
       </blockquote>
 
-      <h3>Save to Local File</h3>
+      <h3>Save to Same Directory as PDF</h3>
+      <blockquote>
+        Extract /home/user/Documents/report.pdf and save to the same directory
+      </blockquote>
+      <p>Use <code>outputPath: "same"</code> to save the extracted content next to the original PDF file. For example, if extracting <code>report.pdf</code>, it will create <code>report.md</code> (or <code>.json</code>, <code>.html</code>, etc.) in the same directory.</p>
+
+      <h3>Save to Specific Location</h3>
       <blockquote>
         Extract /path/to/report.pdf and save to ./extracted/report.md
       </blockquote>
-
       <p>This will save the extracted content to a local file in your current working directory, making it easy to keep outputs in your project structure.</p>
+
+      <h3>Save to Current Directory</h3>
+      <blockquote>
+        Extract ~/Downloads/invoice.pdf and save to current directory
+      </blockquote>
+      <p>Use <code>outputPath: "."</code> to save the extracted file in your current working directory with the same base filename as the PDF.</p>
 
       <h3>Save to Directory (Auto-generated Filename)</h3>
       <blockquote>
