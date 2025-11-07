@@ -203,7 +203,6 @@ const client = new MCPClient({
   serverArgs: ['/path/to/pdflow/src/mcp/dist/server.js'],
   env: {
     PDFLOW_BASE_URL: 'http://localhost:3001',
-    GEMINI_API_KEY: 'your-key',
   },
 });
 
@@ -215,6 +214,8 @@ const result = await client.callTool('pdflow_extract_pdf', {
 });
 
 console.log(result.content);`}</code></pre>
+
+      <p><strong>Note:</strong> The MCP server only needs <code>PDFLOW_BASE_URL</code>. Your Gemini API key should be configured in PDFlow itself (via <code>.env</code> file or Docker environment), not in the MCP client configuration.</p>
 
       <h2>Use Cases</h2>
 
