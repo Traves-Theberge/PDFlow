@@ -24,16 +24,23 @@ import path from 'path';
 const PDFLOW_BASE_URL = process.env.PDFLOW_BASE_URL || 'http://localhost:3001';
 /**
  * Security: Allowed directories for PDF access
- * Only files in these directories can be processed
+ * Set ALLOWED_DIRECTORIES env var to customize
+ * - Colon-separated list: "/home/user/pdfs:/home/user/docs"
+ * - "*" to allow all directories (less secure, but more flexible)
+ * - Empty/unset: defaults to Documents, Downloads, Desktop
  */
-const ALLOWED_DIRECTORIES = (process.env.ALLOWED_DIRECTORIES || '')
-    .split(':')
-    .filter(Boolean)
-    .map(dir => path.resolve(dir));
-// Default allowed directories if none specified
-if (ALLOWED_DIRECTORIES.length === 0) {
+const ALLOW_ALL_DIRECTORIES = process.env.ALLOWED_DIRECTORIES === '*';
+const ALLOWED_DIRECTORIES = ALLOW_ALL_DIRECTORIES
+    ? []
+    : (process.env.ALLOWED_DIRECTORIES || '')
+        .split(':')
+        .filter(Boolean)
+        .map(dir => path.resolve(dir));
+// Default allowed directories if none specified and not allowing all
+if (!ALLOW_ALL_DIRECTORIES && ALLOWED_DIRECTORIES.length === 0) {
     const homeDir = process.env.HOME || process.env.USERPROFILE || '';
-    ALLOWED_DIRECTORIES.push(path.join(homeDir, 'Documents'), path.join(homeDir, 'Downloads'), path.join(homeDir, 'Desktop'));
+    ALLOWED_DIRECTORIES.push(process.cwd(), // Current working directory (where AI tool was launched)
+    path.join(homeDir, 'Documents'), path.join(homeDir, 'Downloads'), path.join(homeDir, 'Desktop'));
 }
 /**
  * Validate that a file path is within allowed directories
@@ -54,13 +61,15 @@ function validateFilePath(filePath) {
     if (path.extname(resolved).toLowerCase() !== '.pdf') {
         return { valid: false, error: `File is not a PDF: ${filePath}` };
     }
-    // Check if within allowed directories
-    const isAllowed = ALLOWED_DIRECTORIES.some(allowedDir => resolved.startsWith(allowedDir));
-    if (!isAllowed) {
-        return {
-            valid: false,
-            error: `Access denied: File must be in allowed directories: ${ALLOWED_DIRECTORIES.join(', ')}`,
-        };
+    // Check if within allowed directories (skip if allowing all)
+    if (!ALLOW_ALL_DIRECTORIES) {
+        const isAllowed = ALLOWED_DIRECTORIES.some(allowedDir => resolved.startsWith(allowedDir));
+        if (!isAllowed) {
+            return {
+                valid: false,
+                error: `Access denied: File must be in allowed directories: ${ALLOWED_DIRECTORIES.join(', ')}`,
+            };
+        }
     }
     return { valid: true };
 }
@@ -98,9 +107,10 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             {
                 name: 'pdflow_extract_pdf',
                 description: 'Extract structured content from a PDF file using AI-powered extraction. ' +
-                    'Uploads a PDF to PDFlow, converts pages to images, and extracts content using Google Gemini AI. ' +
+                    'This is the primary tool - it handles the complete workflow: upload, conversion, extraction, and returns the full content. ' +
                     'Supports multiple output formats: markdown, json, xml, html, yaml, mdx. ' +
-                    'Can aggregate all pages into a single output or return page-by-page results.',
+                    'Returns the complete extracted content directly - no need to call additional tools. ' +
+                    'For very large documents, use pdflow_check_status and pdflow_get_results for async processing.',
                 inputSchema: {
                     type: 'object',
                     properties: {
@@ -125,8 +135,9 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             {
                 name: 'pdflow_check_status',
-                description: 'Check the processing status of a PDF extraction session. ' +
-                    'Use this to monitor ongoing extractions and determine when results are ready. ' +
+                description: '[OPTIONAL] Check the processing status of a PDF extraction session. ' +
+                    'Only needed if pdflow_extract_pdf returns "processing" status for large documents. ' +
+                    'Most PDFs complete immediately and return full content from pdflow_extract_pdf. ' +
                     'Returns information about total pages, processed pages, and current status.',
                 inputSchema: {
                     type: 'object',
@@ -141,8 +152,9 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             {
                 name: 'pdflow_get_results',
-                description: 'Retrieve the extracted content from a completed session. ' +
-                    'Downloads the aggregated result file (if aggregation was enabled) or lists available per-page results. ' +
+                description: '[OPTIONAL] Retrieve the extracted content from a completed session. ' +
+                    'Only needed if you want to re-fetch results or if content was too large to return inline. ' +
+                    'Most use cases get full content directly from pdflow_extract_pdf. ' +
                     'Returns the actual extracted content as text.',
                 inputSchema: {
                     type: 'object',
@@ -260,35 +272,54 @@ async function handleExtractPdf(args) {
             console.error('Failed to fetch results:', error);
         }
     }
-    // Format response
-    const result = {
-        success: true,
-        sessionId,
-        status: processResult.status,
-        totalPages: processResult.totalPages,
-        processedPages: processResult.processedPages,
-        processingTime: processResult.processingTime,
-        format,
-        aggregate,
-        message: processResult.status === 'completed'
-            ? `Successfully extracted ${processResult.processedPages} pages from PDF`
-            : 'Processing in progress',
-        extractedContent: extractedContent
-            ? {
-                preview: extractedContent.substring(0, 500) + (extractedContent.length > 500 ? '...' : ''),
-                fullLength: extractedContent.length,
-                retrieveWith: `pdflow_get_results with sessionId: ${sessionId}`,
-            }
-            : null,
-    };
-    return {
-        content: [
-            {
-                type: 'text',
-                text: JSON.stringify(result, null, 2),
-            },
-        ],
-    };
+    // Format response - return full content for simplified workflow
+    if (processResult.status === 'completed' && extractedContent) {
+        // SUCCESS: Return full content directly
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: JSON.stringify({
+                        success: true,
+                        status: 'completed',
+                        sessionId,
+                        totalPages: processResult.totalPages,
+                        processedPages: processResult.processedPages,
+                        processingTime: processResult.processingTime,
+                        format,
+                        message: `Successfully extracted ${processResult.processedPages} pages from PDF`,
+                        content: extractedContent, // Full content, not preview
+                    }, null, 2),
+                },
+            ],
+        };
+    }
+    else {
+        // PROCESSING or PARTIAL: Return status info
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: JSON.stringify({
+                        success: true,
+                        status: processResult.status,
+                        sessionId,
+                        totalPages: processResult.totalPages,
+                        processedPages: processResult.processedPages,
+                        processingTime: processResult.processingTime,
+                        format,
+                        aggregate,
+                        message: processResult.status === 'completed'
+                            ? 'Processing completed. Use pdflow_get_results to retrieve content.'
+                            : 'Processing in progress. Use pdflow_check_status to monitor progress.',
+                        nextStep: processResult.status === 'completed'
+                            ? `Use pdflow_get_results with sessionId: ${sessionId}`
+                            : `Use pdflow_check_status with sessionId: ${sessionId}`,
+                    }, null, 2),
+                },
+            ],
+        };
+    }
 }
 /**
  * Check processing status
@@ -363,7 +394,7 @@ async function handleHealthCheck() {
             pdflowStatus: result.status,
             timestamp: result.timestamp,
             uptime: `${(result.uptime / 60).toFixed(1)} minutes`,
-            allowedDirectories: ALLOWED_DIRECTORIES,
+            allowedDirectories: ALLOW_ALL_DIRECTORIES ? ['* (all directories)'] : ALLOWED_DIRECTORIES,
         };
         return {
             content: [
@@ -404,7 +435,12 @@ async function handleHealthCheck() {
 async function main() {
     console.error(`PDFlow MCP Server v1.0.0`);
     console.error(`PDFlow URL: ${PDFLOW_BASE_URL}`);
-    console.error(`Allowed directories: ${ALLOWED_DIRECTORIES.join(', ') || 'None (all paths allowed)'}`);
+    if (ALLOW_ALL_DIRECTORIES) {
+        console.error(`Allowed directories: * (all directories - less secure but more flexible)`);
+    }
+    else {
+        console.error(`Allowed directories: ${ALLOWED_DIRECTORIES.join(', ')}`);
+    }
     console.error('');
     console.error('Note: Gemini API key should be configured in PDFlow, not in MCP config');
     console.error('Starting MCP server on stdio...');

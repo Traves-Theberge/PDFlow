@@ -41,6 +41,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 🔗 **Updated all API examples** to clarify dev vs Docker port usage
 - 📉 **Removed rate limit/processing time information** from performance documentation
 
+### Changed - MCP Tool Simplification
+- ⚡ **Simplified MCP workflow to single tool call**
+  - `pdflow_extract_pdf` now returns full content directly (not just preview)
+  - No need to call `pdflow_check_status` or `pdflow_get_results` for typical use cases
+  - Marked status/results tools as [OPTIONAL] for edge cases only
+  - Updated tool descriptions to clarify primary vs optional tools
+  - Improved response format with clear success/processing states
+- 📁 **Enhanced directory permissions system**
+  - Current working directory automatically allowed (where AI tool was launched)
+  - Default allowed: cwd + Documents/Downloads/Desktop
+  - Custom directories via `ALLOWED_DIRECTORIES` env var (colon-separated)
+  - Allow all directories with `ALLOWED_DIRECTORIES="*"`
+  - Comprehensive documentation of permission options in AI Tools page
+
 ### Security
 - 🔒 **SECURITY FIX: Removed GEMINI_API_KEY from MCP server configuration**
   - MCP server now only requires `PDFLOW_BASE_URL`
@@ -48,6 +62,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Improved separation of concerns: MCP server = HTTP client, PDFlow = API processor
   - Updated all documentation examples to reflect secure configuration
   - Removed API key validation from MCP server startup
+- 🔐 **Improved directory access security**
+  - Added current working directory to default allowed list
+  - Flexible three-tier permission system (default/custom/allow-all)
+  - Clear security warnings for less restrictive options
 
 ### Fixed
 - 🐛 **Mobile navigation accessibility** - Sidebar now accessible on all screen sizes

@@ -70,12 +70,13 @@ npm run build`}</code></pre>
       "command": "node",
       "args": ["/full/path/to/pdflow/src/mcp/dist/server.js"],
       "env": {
-        "PDFLOW_BASE_URL": "http://localhost:3535",
-        "GEMINI_API_KEY": "your-api-key-here"
+        "PDFLOW_BASE_URL": "http://localhost:3535"
       }
     }
   }
 }`}</code></pre>
+
+      <p><strong>Note:</strong> The MCP server only needs to know where PDFlow is running. Your Gemini API key should be configured in PDFlow itself (via <code>.env</code> file or Docker environment), not in the MCP configuration.</p>
 
       <h3>4. Restart Your AI Tool</h3>
       <ul>
@@ -87,33 +88,56 @@ npm run build`}</code></pre>
 
       <h2>Available Tools</h2>
 
-      <h3>pdflow_extract_pdf</h3>
-      <p>Extract content from a PDF file.</p>
+      <h3>pdflow_extract_pdf (Primary Tool)</h3>
+      <p>
+        <strong>This is the main tool you'll use.</strong> It handles the complete PDF extraction workflow:
+        upload, conversion, AI extraction, and returns the full content directly. In most cases, this is the
+        only tool you need.
+      </p>
 
       <p><strong>Parameters:</strong></p>
       <ul>
         <li><code>pdfPath</code> (string, required) - Absolute path to PDF file</li>
-        <li><code>format</code> (string, optional) - Output format: markdown, json, xml, yaml, html, mdx, csv. Default: markdown</li>
+        <li><code>format</code> (string, optional) - Output format: markdown, json, xml, yaml, html, mdx. Default: markdown</li>
         <li><code>aggregate</code> (boolean, optional) - Combine all pages into one file. Default: true</li>
       </ul>
 
-      <p><strong>Example usage in Claude:</strong></p>
+      <p><strong>Returns:</strong> The complete extracted content in the specified format</p>
+
+      <p><strong>Example usage:</strong></p>
       <blockquote>
         Extract the content from ~/Documents/report.pdf
       </blockquote>
 
-      <h3>pdflow_check_status</h3>
-      <p>Check the processing status of a PDF.</p>
+      <h3>pdflow_check_status (Optional)</h3>
+      <p>
+        <strong>[Rarely Needed]</strong> Check the processing status of a PDF. Only needed for very large
+        documents that don't complete immediately. Most PDFs process quickly and return results directly
+        from <code>pdflow_extract_pdf</code>.
+      </p>
 
       <p><strong>Parameters:</strong></p>
       <ul>
         <li><code>sessionId</code> (string, required) - Session ID from extraction</li>
       </ul>
 
-      <h3>pdflow_health_check</h3>
-      <p>Verify PDFlow service is running.</p>
+      <h3>pdflow_get_results (Optional)</h3>
+      <p>
+        <strong>[Rarely Needed]</strong> Retrieve content from a completed session. Only needed if you want
+        to re-fetch results or if content was too large to return inline. Most use cases get full content
+        directly from <code>pdflow_extract_pdf</code>.
+      </p>
 
-      <p><strong>Example usage in Claude:</strong></p>
+      <p><strong>Parameters:</strong></p>
+      <ul>
+        <li><code>sessionId</code> (string, required) - Session ID from completed extraction</li>
+        <li><code>format</code> (string, optional) - Format to retrieve. Default: markdown</li>
+      </ul>
+
+      <h3>pdflow_health_check</h3>
+      <p>Verify PDFlow service is running and accessible.</p>
+
+      <p><strong>Example usage:</strong></p>
       <blockquote>
         Is PDFlow running? Use pdflow_health_check
       </blockquote>
@@ -122,15 +146,28 @@ npm run build`}</code></pre>
 
       <h3>Environment Variables</h3>
       <ul>
-        <li><code>PDFLOW_BASE_URL</code> - URL of your PDFlow server (default: http://localhost:3535)</li>
-        <li><code>GEMINI_API_KEY</code> - Your Google Gemini API key</li>
+        <li><code>PDFLOW_BASE_URL</code> - URL of your PDFlow server
+          <ul>
+            <li>Local development: <code>http://localhost:3001</code></li>
+            <li>Docker deployment: <code>http://localhost:3535</code></li>
+            <li>Remote server: <code>http://your-server-ip:3535</code></li>
+          </ul>
+        </li>
+        <li><code>ALLOWED_DIRECTORIES</code> (optional) - Control which directories can access PDFs
+          <ul>
+            <li>Default: Current directory + Documents/Downloads/Desktop</li>
+            <li>Custom: Colon-separated paths (e.g., <code>/home/user/projects:/home/user/work</code>)</li>
+            <li>Allow all: <code>*</code> (less secure, but more flexible)</li>
+          </ul>
+        </li>
       </ul>
 
       <h3>Important Notes</h3>
       <ul>
+        <li>Gemini API key should be configured in PDFlow (via <code>.env</code> or Docker), not in MCP config</li>
         <li>Use <strong>absolute paths</strong> for all file paths (no <code>~</code> or relative paths)</li>
-        <li>PDFlow web server must be running</li>
-        <li>Restart Claude Desktop after config changes</li>
+        <li>PDFlow server must be running before using MCP tools</li>
+        <li>Restart your AI tool completely after config changes</li>
       </ul>
 
       <h2>Usage Examples</h2>
@@ -155,17 +192,24 @@ npm run build`}</code></pre>
         Extract contract_v1.pdf and contract_v2.pdf then compare them
       </blockquote>
 
-      <h2>Workflow</h2>
-      <p>When you ask Claude to extract a PDF using PDFlow:</p>
+      <h2>Simplified Workflow</h2>
+      <p>
+        PDFlow MCP has been optimized for a simple, single-tool workflow. When you ask an AI assistant
+        to extract a PDF:
+      </p>
       <ol>
-        <li>Claude recognizes the need for PDF extraction</li>
-        <li>Calls <code>pdflow_extract_pdf</code> via MCP</li>
-        <li>MCP server uploads PDF to PDFlow API</li>
-        <li>PDFlow converts PDF to images</li>
-        <li>Gemini AI extracts content</li>
-        <li>Results flow back through MCP to Claude</li>
-        <li>Claude analyzes and responds with extracted content</li>
+        <li><strong>AI recognizes</strong> the need for PDF extraction</li>
+        <li><strong>Calls one tool</strong>: <code>pdflow_extract_pdf</code></li>
+        <li><strong>MCP server handles</strong>: upload → conversion → AI extraction</li>
+        <li><strong>Returns full content</strong> directly in the response</li>
+        <li><strong>AI analyzes</strong> and responds with the extracted content</li>
       </ol>
+
+      <p className="text-sm" style={{ color: 'var(--docs-note-color)', marginTop: '1rem' }}>
+        💡 <strong>Key Simplification:</strong> Unlike other PDF extraction tools that require multiple
+        steps (upload, check status, get results), PDFlow returns everything in a single call. The optional
+        status and results tools are only needed for edge cases with very large documents.
+      </p>
 
       <h2>Troubleshooting</h2>
 
@@ -202,20 +246,35 @@ curl http://localhost:3535/api/health
       "command": "node",
       "args": ["/path/to/mcp/dist/server.js"],
       "env": {
-        "PDFLOW_BASE_URL": "http://localhost:3535",
-        "GEMINI_API_KEY": "your-key"
+        "PDFLOW_BASE_URL": "http://localhost:3535"
       }
     },
     "pdflow-remote": {
       "command": "node",
       "args": ["/path/to/mcp/dist/server.js"],
       "env": {
-        "PDFLOW_BASE_URL": "http://remote-server:3000",
-        "GEMINI_API_KEY": "your-key"
+        "PDFLOW_BASE_URL": "http://remote-server:3535"
       }
     }
   }
 }`}</code></pre>
+
+      <h3>Custom Directory Permissions</h3>
+      <pre><code>{`{
+  "mcpServers": {
+    "pdflow": {
+      "command": "node",
+      "args": ["/path/to/pdflow/src/mcp/dist/server.js"],
+      "env": {
+        "PDFLOW_BASE_URL": "http://localhost:3535",
+        "ALLOWED_DIRECTORIES": "/home/user/research:/home/user/work/reports"
+      }
+    }
+  }
+}`}</code></pre>
+
+      <p>Or allow all directories (less secure):</p>
+      <pre><code>{`"ALLOWED_DIRECTORIES": "*"`}</code></pre>
 
       <h2>Next Steps</h2>
       <ul>

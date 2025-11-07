@@ -130,6 +130,115 @@ pwd
       <h3>4. Restart Your Tool</h3>
       <p>Restart according to your tool's instructions listed above.</p>
 
+      <h2>Directory Permissions</h2>
+      <p>
+        For security, the MCP server restricts which directories it can access for PDF processing.
+        By default, it allows access to commonly used directories, but you can customize this behavior.
+      </p>
+
+      <h3>Default Allowed Directories</h3>
+      <p>Without any additional configuration, the MCP server can access PDFs in:</p>
+      <ul>
+        <li><strong>Current working directory</strong> - Where your AI tool was launched</li>
+        <li><strong>Documents folder</strong> - <code>~/Documents</code></li>
+        <li><strong>Downloads folder</strong> - <code>~/Downloads</code></li>
+        <li><strong>Desktop folder</strong> - <code>~/Desktop</code></li>
+      </ul>
+
+      <p className="text-sm" style={{ color: 'var(--docs-note-color)' }}>
+        💡 <strong>Tip:</strong> Launch your AI tool from your project directory to automatically allow access to PDFs in that location.
+      </p>
+
+      <h3>Custom Directories</h3>
+      <p>To allow access to specific directories, add <code>ALLOWED_DIRECTORIES</code> to your MCP configuration:</p>
+      <pre><code>{`{
+  "mcpServers": {
+    "pdflow": {
+      "command": "node",
+      "args": ["/path/to/pdflow/src/mcp/dist/server.js"],
+      "env": {
+        "PDFLOW_BASE_URL": "http://localhost:3535",
+        "ALLOWED_DIRECTORIES": "/home/user/projects:/home/user/work/pdfs"
+      }
+    }
+  }
+}`}</code></pre>
+
+      <p><strong>Format:</strong> Colon-separated list of absolute paths (Linux/macOS) or semicolon-separated (Windows)</p>
+
+      <h4>Examples:</h4>
+      <p><strong>macOS:</strong></p>
+      <pre><code>"ALLOWED_DIRECTORIES": "/Users/travis/projects:/Users/travis/research"</code></pre>
+
+      <p><strong>Linux:</strong></p>
+      <pre><code>"ALLOWED_DIRECTORIES": "/home/travis/projects:/home/travis/research"</code></pre>
+
+      <p><strong>Windows:</strong></p>
+      <pre><code>"ALLOWED_DIRECTORIES": "C:\\Users\\Travis\\projects;C:\\Users\\Travis\\research"</code></pre>
+
+      <h3>Allow All Directories (Less Secure)</h3>
+      <p>
+        For maximum flexibility, you can allow access to <strong>any directory</strong> on your system.
+        This is convenient but less secure.
+      </p>
+      <pre><code>{`{
+  "mcpServers": {
+    "pdflow": {
+      "command": "node",
+      "args": ["/path/to/pdflow/src/mcp/dist/server.js"],
+      "env": {
+        "PDFLOW_BASE_URL": "http://localhost:3535",
+        "ALLOWED_DIRECTORIES": "*"
+      }
+    }
+  }
+}`}</code></pre>
+
+      <p className="text-sm" style={{ color: 'var(--docs-warning-color)' }}>
+        ⚠️ <strong>Security Note:</strong> Using <code>*</code> allows the MCP server to access any PDF file on your system.
+        Only use this if you trust the AI tool and are on a personal machine.
+      </p>
+
+      <h3>Choosing the Right Permission Level</h3>
+      <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
+        <thead>
+          <tr style={{ borderBottom: '2px solid var(--border-color)' }}>
+            <th style={{ textAlign: 'left', padding: '0.5rem' }}>Option</th>
+            <th style={{ textAlign: 'left', padding: '0.5rem' }}>Security</th>
+            <th style={{ textAlign: 'left', padding: '0.5rem' }}>Use Case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+            <td style={{ padding: '0.5rem' }}><strong>Default</strong></td>
+            <td style={{ padding: '0.5rem' }}>🟢 High</td>
+            <td style={{ padding: '0.5rem' }}>General use, personal documents</td>
+          </tr>
+          <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+            <td style={{ padding: '0.5rem' }}><strong>Custom</strong></td>
+            <td style={{ padding: '0.5rem' }}>🟡 Medium</td>
+            <td style={{ padding: '0.5rem' }}>Specific project directories</td>
+          </tr>
+          <tr>
+            <td style={{ padding: '0.5rem' }}><strong>Allow All (*)</strong></td>
+            <td style={{ padding: '0.5rem' }}>🔴 Low</td>
+            <td style={{ padding: '0.5rem' }}>Development, trusted environment</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Troubleshooting Access Denied Errors</h3>
+      <p>If you get an error like:</p>
+      <pre><code>Access denied: File must be in allowed directories: /home/user/Documents, /home/user/Downloads</code></pre>
+
+      <p><strong>Solutions:</strong></p>
+      <ol>
+        <li><strong>Move the PDF</strong> to an allowed directory (Documents, Downloads, Desktop)</li>
+        <li><strong>Add a custom directory</strong> using <code>ALLOWED_DIRECTORIES</code> (see above)</li>
+        <li><strong>Launch your AI tool</strong> from the directory containing your PDFs</li>
+        <li><strong>Use allow all</strong> with <code>ALLOWED_DIRECTORIES="*"</code> if security is not a concern</li>
+      </ol>
+
       <h2>Verify Installation</h2>
 
       <h3>Check for PDFlow Tools</h3>
