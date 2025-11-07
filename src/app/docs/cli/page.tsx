@@ -27,25 +27,33 @@ export default function CLIPage() {
       <pre><code>{`# Set your API key (recommended)
 export GEMINI_API_KEY="your-api-key-here"
 
-# Extract a PDF to markdown
+# Extract a single PDF to markdown
 npm run pdflow -- extract document.pdf
 
-# Extract with aggregation (combines all pages)
+# Extract all PDFs in a directory
+npm run pdflow -- extract ./pdfs/
+
+# Extract with aggregation (combines all pages per PDF)
 npm run pdflow -- extract document.pdf -a
 
 # Extract to JSON format
-npm run pdflow -- extract document.pdf -f json`}</code></pre>
+npm run pdflow -- extract document.pdf -f json
+
+# Extract directory of PDFs to custom output location
+npm run pdflow -- extract ./documents/ -o ./extracted/`}</code></pre>
 
       <h2>Commands</h2>
 
       <h3>extract</h3>
-      <p>Extract structured data from a PDF file.</p>
-      <pre><code>npm run pdflow -- extract &lt;pdf-file&gt; [options]</code></pre>
+      <p>Extract structured data from a PDF file or directory of PDF files.</p>
+      <pre><code>npm run pdflow -- extract &lt;pdf-input&gt; [options]</code></pre>
 
       <p><strong>Arguments:</strong></p>
       <ul>
-        <li><code>&lt;pdf-file&gt;</code> - Path to the PDF file to process (required)</li>
+        <li><code>&lt;pdf-input&gt;</code> - Path to a PDF file or directory containing PDF files (required)</li>
       </ul>
+
+      <p><strong>Note:</strong> When a directory is provided, PDFlow will automatically find and process all <code>.pdf</code> files in that directory.</p>
 
       <h3>validate-key</h3>
       <p>Validate your Gemini API key before processing.</p>
@@ -94,7 +102,7 @@ npm run pdflow -- extract --help`}</code></pre>
       <pre><code>npm run pdflow -- extract document.pdf -k "your-api-key"</code></pre>
 
       <h3>-a, --aggregate</h3>
-      <p>Combine all pages into a single output file.</p>
+      <p>Combine all pages into a single output file per PDF.</p>
 
       <p><strong>Benefits:</strong></p>
       <ul>
@@ -103,6 +111,8 @@ npm run pdflow -- extract --help`}</code></pre>
         <li>Maintains page order</li>
         <li>Easier to share and view</li>
       </ul>
+
+      <p><strong>Behavior with directories:</strong> When processing multiple PDFs from a directory, each PDF will be aggregated into its own single file.</p>
 
       <p><strong>Example:</strong></p>
       <pre><code>npm run pdflow -- extract document.pdf -a</code></pre>
@@ -134,8 +144,25 @@ npm run pdflow -- extract report.pdf -f html -o ./results/html`}</code></pre>
       <p>Combine all pages into a single file:</p>
       <pre><code>npm run pdflow -- extract book.pdf -f markdown -a -o ./book-output</code></pre>
 
-      <h3>Batch Processing</h3>
-      <p>Process multiple PDFs in a loop:</p>
+      <h3>Directory Processing</h3>
+      <p>Process all PDFs in a directory at once:</p>
+      <pre><code>{`# Process all PDFs in ./invoices/ to markdown
+npm run pdflow -- extract ./invoices/ -f markdown -a -o ./results
+
+# Process all PDFs in current directory to JSON
+npm run pdflow -- extract . -f json -o ./json-outputs`}</code></pre>
+
+      <p><strong>Benefits of directory processing:</strong></p>
+      <ul>
+        <li>Process multiple PDFs in a single command</li>
+        <li>Automatic PDF file discovery</li>
+        <li>Progress tracking for each file</li>
+        <li>Summary statistics at completion</li>
+        <li>Each PDF outputs to its own file in the output directory</li>
+      </ul>
+
+      <h3>Batch Processing (Alternative)</h3>
+      <p>You can still use shell loops if you need more control:</p>
       <pre><code>{`#!/bin/bash
 for pdf in documents/*.pdf; do
   echo "Processing: $pdf"

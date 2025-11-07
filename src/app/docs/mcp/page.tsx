@@ -91,8 +91,8 @@ npm run build`}</code></pre>
       <h3>pdflow_extract_pdf (Primary Tool)</h3>
       <p>
         <strong>This is the main tool you'll use.</strong> It handles the complete PDF extraction workflow:
-        upload, conversion, AI extraction, and returns the full content directly. In most cases, this is the
-        only tool you need.
+        upload, conversion, AI extraction, and returns the full content directly. Optionally saves extracted
+        content to a local file. In most cases, this is the only tool you need.
       </p>
 
       <p><strong>Parameters:</strong></p>
@@ -100,13 +100,22 @@ npm run build`}</code></pre>
         <li><code>pdfPath</code> (string, required) - Absolute path to PDF file</li>
         <li><code>format</code> (string, optional) - Output format: markdown, json, xml, yaml, html, mdx. Default: markdown</li>
         <li><code>aggregate</code> (boolean, optional) - Combine all pages into one file. Default: true</li>
+        <li><code>outputPath</code> (string, optional) - Local path to save extracted content. Can be absolute or relative. If a directory is provided, a filename will be auto-generated. If no extension is provided, the appropriate extension based on format will be added.</li>
       </ul>
 
-      <p><strong>Returns:</strong> The complete extracted content in the specified format</p>
+      <p><strong>Returns:</strong> The complete extracted content in the specified format, plus <code>savedTo</code> field with absolute path if <code>outputPath</code> was provided</p>
 
       <p><strong>Example usage:</strong></p>
       <blockquote>
         Extract the content from ~/Documents/report.pdf
+      </blockquote>
+
+      <blockquote>
+        Extract ~/Documents/contract.pdf and save to ./output.md
+      </blockquote>
+
+      <blockquote>
+        Extract invoice.pdf in JSON format and save to ./extracted/ directory
       </blockquote>
 
       <h3>pdflow_check_status (Optional)</h3>
@@ -181,6 +190,20 @@ npm run build`}</code></pre>
       <blockquote>
         Extract invoice.pdf in JSON format
       </blockquote>
+
+      <h3>Save to Local File</h3>
+      <blockquote>
+        Extract /path/to/report.pdf and save to ./extracted/report.md
+      </blockquote>
+
+      <p>This will save the extracted content to a local file in your current working directory, making it easy to keep outputs in your project structure.</p>
+
+      <h3>Save to Directory (Auto-generated Filename)</h3>
+      <blockquote>
+        Extract invoice.pdf in JSON format and save to ./outputs/ directory
+      </blockquote>
+
+      <p>PDFlow will automatically generate a filename (e.g., <code>invoice.json</code>) based on the original PDF name and selected format.</p>
 
       <h3>Analyze Extracted Content</h3>
       <blockquote>

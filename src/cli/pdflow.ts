@@ -33,22 +33,50 @@ program
   .version('5.1.0');
 
 /**
- * Extract command - Process a PDF file
+ * Extract command - Process a PDF file or directory of PDFs
  */
 program
-  .command('extract <pdf-file>')
-  .description('Extract structured data from a PDF file')
+  .command('extract <pdf-input>')
+  .description('Extract structured data from a PDF file or directory of PDF files')
   .option('-f, --format <format>', 'Output format (markdown|json|xml|yaml|html|mdx|csv)', 'markdown')
   .option('-o, --output <directory>', 'Output directory (default: ./outputs)', './outputs')
   .option('-k, --api-key <key>', 'Gemini API key (or set GEMINI_API_KEY env var)')
-  .option('-a, --aggregate', 'Aggregate all pages into a single file', false)
+  .option('-a, --aggregate', 'Aggregate all pages into a single file (per PDF)', false)
   .option('-v, --verbose', 'Show verbose output', false)
-  .action(async (pdfFile: string, options) => {
+  .action(async (pdfInput: string, options) => {
     try {
-      // Validate PDF file exists
-      if (!fs.existsSync(pdfFile)) {
-        console.error(`❌ Error: PDF file not found: ${pdfFile}`);
+      // Validate PDF input exists
+      if (!fs.existsSync(pdfInput)) {
+        console.error(`❌ Error: PDF file or directory not found: ${pdfInput}`);
         process.exit(1);
+      }
+
+      // Determine if input is file or directory
+      const inputStat = fs.statSync(pdfInput);
+      const pdfFiles: string[] = [];
+
+      if (inputStat.isDirectory()) {
+        // Read all PDF files from directory
+        const files = fs.readdirSync(pdfInput);
+        for (const file of files) {
+          if (file.toLowerCase().endsWith('.pdf')) {
+            pdfFiles.push(path.join(pdfInput, file));
+          }
+        }
+
+        if (pdfFiles.length === 0) {
+          console.error(`❌ Error: No PDF files found in directory: ${pdfInput}`);
+          process.exit(1);
+        }
+
+        console.log(`📁 Found ${pdfFiles.length} PDF file(s) in directory\n`);
+      } else {
+        // Single file
+        if (!pdfInput.toLowerCase().endsWith('.pdf')) {
+          console.error(`❌ Error: File must be a PDF: ${pdfInput}`);
+          process.exit(1);
+        }
+        pdfFiles.push(pdfInput);
       }
 
       // Validate API key
@@ -73,7 +101,7 @@ program
       }
 
       console.log('🚀 PDFlow CLI - Starting PDF extraction\n');
-      console.log(`📄 File: ${path.basename(pdfFile)}`);
+      console.log(`📄 File(s): ${pdfFiles.length}`);
       console.log(`📊 Format: ${options.format}`);
       console.log(`📁 Output: ${options.output}`);
       console.log(`🔄 Aggregate: ${options.aggregate ? 'Yes' : 'No'}`);
@@ -85,21 +113,39 @@ program
         verbose: options.verbose,
       });
 
-      // Process the PDF
-      const result = await processor.process({
-        pdfPath: pdfFile,
-        outputDir: options.output,
-        format: options.format as any,
-        aggregate: options.aggregate,
-      });
+      // Process all PDFs
+      const results = [];
+      for (let i = 0; i < pdfFiles.length; i++) {
+        const pdfFile = pdfFiles[i];
+        const pdfName = path.basename(pdfFile);
 
-      console.log('\n✅ Processing complete!');
-      console.log(`📊 Total pages: ${result.totalPages}`);
-      console.log(`⏱️  Processing time: ${result.processingTime}`);
-      console.log(`📁 Output directory: ${result.outputPath}`);
+        if (pdfFiles.length > 1) {
+          console.log(`\n[${i + 1}/${pdfFiles.length}] Processing: ${pdfName}`);
+        }
 
-      if (result.aggregated) {
-        console.log(`📄 Aggregated file: ${result.aggregatedFile}`);
+        // Process the PDF
+        const result = await processor.process({
+          pdfPath: pdfFile,
+          outputDir: options.output,
+          format: options.format as any,
+          aggregate: options.aggregate,
+        });
+
+        results.push({ file: pdfName, ...result });
+
+        if (pdfFiles.length > 1) {
+          console.log(`✅ ${pdfName} complete (${result.totalPages} pages, ${result.processingTime})`);
+        }
+      }
+
+      // Summary
+      console.log('\n✅ All processing complete!');
+      console.log(`📊 Total PDFs processed: ${results.length}`);
+      console.log(`📊 Total pages: ${results.reduce((sum, r) => sum + r.totalPages, 0)}`);
+      console.log(`📁 Output directory: ${options.output}`);
+
+      if (pdfFiles.length === 1 && results[0].aggregated) {
+        console.log(`📄 Aggregated file: ${results[0].aggregatedFile}`);
       }
 
       process.exit(0);

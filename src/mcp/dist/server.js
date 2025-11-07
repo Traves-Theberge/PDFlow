@@ -110,6 +110,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                     'This is the primary tool - it handles the complete workflow: upload, conversion, extraction, and returns the full content. ' +
                     'Supports multiple output formats: markdown, json, xml, html, yaml, mdx. ' +
                     'Returns the complete extracted content directly - no need to call additional tools. ' +
+                    'Optionally saves the output to a local file if outputPath is provided. ' +
                     'For very large documents, use pdflow_check_status and pdflow_get_results for async processing.',
                 inputSchema: {
                     type: 'object',
@@ -128,6 +129,10 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                             type: 'boolean',
                             description: 'Whether to combine all pages into a single output file (default: true)',
                             default: true,
+                        },
+                        outputPath: {
+                            type: 'string',
+                            description: 'Optional local path to save the extracted content. Can be absolute or relative. If directory, generates filename. Example: "./output.md" or "./outputs/"',
                         },
                     },
                     required: ['pdfPath'],
@@ -221,7 +226,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
  * Extract PDF - Main workflow
  */
 async function handleExtractPdf(args) {
-    const { pdfPath, format = 'markdown', aggregate = true } = args;
+    const { pdfPath, format = 'markdown', aggregate = true, outputPath } = args;
     // Security: Validate file path
     const validation = validateFilePath(pdfPath);
     if (!validation.valid) {
@@ -274,6 +279,34 @@ async function handleExtractPdf(args) {
     }
     // Format response - return full content for simplified workflow
     if (processResult.status === 'completed' && extractedContent) {
+        // Save to local file if outputPath is provided
+        let savedFilePath;
+        if (outputPath) {
+            try {
+                const resolvedPath = path.resolve(outputPath);
+                let finalPath = resolvedPath;
+                // If path is a directory, generate filename
+                if (fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isDirectory()) {
+                    const pdfBasename = path.basename(pdfPath, '.pdf');
+                    finalPath = path.join(resolvedPath, `${pdfBasename}.${format}`);
+                }
+                else if (!path.extname(resolvedPath)) {
+                    // If no extension, add it
+                    finalPath = `${resolvedPath}.${format}`;
+                }
+                // Create directory if it doesn't exist
+                const dir = path.dirname(finalPath);
+                if (!fs.existsSync(dir)) {
+                    fs.mkdirSync(dir, { recursive: true });
+                }
+                // Write the file
+                fs.writeFileSync(finalPath, extractedContent, 'utf8');
+                savedFilePath = finalPath;
+            }
+            catch (error) {
+                console.error('Failed to save file locally:', error);
+            }
+        }
         // SUCCESS: Return full content directly
         return {
             content: [
@@ -289,6 +322,7 @@ async function handleExtractPdf(args) {
                         format,
                         message: `Successfully extracted ${processResult.processedPages} pages from PDF`,
                         content: extractedContent, // Full content, not preview
+                        savedTo: savedFilePath, // Include saved file path if applicable
                     }, null, 2),
                 },
             ],
