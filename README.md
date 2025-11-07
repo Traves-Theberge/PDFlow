@@ -157,6 +157,27 @@ npm run pdflow -- validate-key
 npm run pdflow -- validate-key -k YOUR_API_KEY
 ```
 
+**Generate MCP configuration:**
+```bash
+# Generate config for VS Code
+npm run pdflow -- mcp-config --tool vscode
+
+# Generate for Claude Desktop
+npm run pdflow -- mcp-config --tool claude-desktop
+
+# Generate for Cursor
+npm run pdflow -- mcp-config --tool cursor
+
+# Generate for Claude Code
+npm run pdflow -- mcp-config --tool claude-code
+
+# Use development server (port 3001)
+npm run pdflow -- mcp-config --dev
+
+# Use custom URL (e.g., Tailscale)
+npm run pdflow -- mcp-config --url http://100.64.0.2:3535
+```
+
 **CLI Output:**
 The CLI creates a session directory in your output folder with:
 - Individual page files (e.g., `page-1.md`, `page-2.md`)

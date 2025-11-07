@@ -13,23 +13,8 @@ export default function PerformancePage() {
         <li><strong>PDF Size:</strong> Larger files take longer to convert and process</li>
         <li><strong>Page Count:</strong> More pages = more API calls to Gemini</li>
         <li><strong>Image Quality:</strong> Higher resolution = larger images = longer processing</li>
-        <li><strong>API Rate Limits:</strong> Free tier: 2 requests/min, Paid tier: higher</li>
+        <li><strong>API Rate Limits:</strong> May vary based on your Gemini API tier</li>
         <li><strong>Network Speed:</strong> Upload and API call latency</li>
-      </ul>
-
-      <h3>Expected Processing Times</h3>
-      <p><strong>Free Tier (2 requests/minute):</strong></p>
-      <ul>
-        <li>10 pages: ~5 minutes</li>
-        <li>50 pages: ~25 minutes</li>
-        <li>100 pages: ~50 minutes</li>
-      </ul>
-
-      <p><strong>Paid Tier (60 requests/minute):</strong></p>
-      <ul>
-        <li>10 pages: ~20 seconds</li>
-        <li>50 pages: ~2 minutes</li>
-        <li>100 pages: ~4 minutes</li>
       </ul>
 
       <h2>Optimization Strategies</h2>

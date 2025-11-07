@@ -30,7 +30,7 @@ const program = new Command();
 program
   .name('pdflow')
   .description('PDFlow - AI-powered PDF extraction CLI')
-  .version('0.5.0');
+  .version('5.1.0');
 
 /**
  * Extract command - Process a PDF file
@@ -110,6 +110,98 @@ program
         console.error('\nStack trace:');
         console.error(error.stack);
       }
+      process.exit(1);
+    }
+  });
+
+/**
+ * MCP Config command - Generate MCP server configuration
+ */
+program
+  .command('mcp-config')
+  .description('Generate MCP server configuration for AI tools')
+  .option('-t, --tool <tool>', 'AI tool (claude-desktop|claude-code|cursor|vscode)', 'claude-desktop')
+  .option('-u, --url <url>', 'PDFlow base URL', 'http://localhost:3535')
+  .option('--dev', 'Use local development URL (http://localhost:3001)', false)
+  .action(async (options) => {
+    try {
+      // Determine PDFlow URL
+      const pdflowUrl = options.dev ? 'http://localhost:3001' : options.url;
+
+      // Get absolute path to MCP server
+      const mcpServerPath = path.resolve(__dirname, '../../src/mcp/dist/server.js');
+
+      // Generate config based on tool
+      const config = {
+        mcpServers: {
+          pdflow: {
+            command: 'node',
+            args: [mcpServerPath],
+            env: {
+              PDFLOW_BASE_URL: pdflowUrl
+            }
+          }
+        }
+      };
+
+      console.log('🔧 PDFlow MCP Configuration\n');
+      console.log(`Tool: ${options.tool}`);
+      console.log(`PDFlow URL: ${pdflowUrl}`);
+      console.log(`MCP Server: ${mcpServerPath}\n`);
+
+      // Show config file location based on tool
+      let configPath = '';
+      switch (options.tool) {
+        case 'claude-desktop':
+          if (process.platform === 'darwin') {
+            configPath = '~/Library/Application Support/Claude/claude_desktop_config.json';
+          } else if (process.platform === 'win32') {
+            configPath = '%APPDATA%\\Claude\\claude_desktop_config.json';
+          } else {
+            configPath = '~/.config/Claude/claude_desktop_config.json';
+          }
+          break;
+        case 'claude-code':
+          if (process.platform === 'win32') {
+            configPath = '%USERPROFILE%\\.claude\\claude_code_config.json';
+          } else {
+            configPath = '~/.claude/claude_code_config.json';
+          }
+          break;
+        case 'cursor':
+          if (process.platform === 'darwin') {
+            configPath = '~/Library/Application Support/Cursor/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json';
+          } else if (process.platform === 'win32') {
+            configPath = '%APPDATA%\\Cursor\\User\\globalStorage\\saoudrizwan.claude-dev\\settings\\cline_mcp_settings.json';
+          } else {
+            configPath = '~/.config/Cursor/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json';
+          }
+          break;
+        case 'vscode':
+          if (process.platform === 'darwin') {
+            configPath = '~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json';
+          } else if (process.platform === 'win32') {
+            configPath = '%APPDATA%\\Code\\User\\globalStorage\\saoudrizwan.claude-dev\\settings\\cline_mcp_settings.json';
+          } else {
+            configPath = '~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json';
+          }
+          break;
+      }
+
+      console.log(`📁 Config file location:\n   ${configPath}\n`);
+      console.log('📋 Configuration:\n');
+      console.log(JSON.stringify(config, null, 2));
+      console.log('\n💡 Tips:');
+      console.log('   • Make sure to build the MCP server first: cd src/mcp && npm run build');
+      console.log('   • Use --dev flag to connect to local development (port 3001)');
+      console.log('   • Use --url to specify a custom PDFlow URL (e.g., Tailscale)');
+      console.log('   • Completely restart your AI tool after updating the config');
+      console.log('\n📖 Documentation: http://localhost:3001/docs/ai-tools');
+
+      process.exit(0);
+
+    } catch (error) {
+      console.error('❌ Error generating MCP config:', error instanceof Error ? error.message : error);
       process.exit(1);
     }
   });

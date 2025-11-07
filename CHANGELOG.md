@@ -19,6 +19,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Port 3001 for local development
   - Port 3535 for Docker deployment
   - Updated in: quickstart, installation, API reference, Docker guide, MCP integration
+- 🛠️ **CLI MCP Config Generator** (`pdflow mcp-config`)
+  - Generate MCP configuration for any AI tool (Claude Desktop, Claude Code, Cursor, VS Code)
+  - Automatic path detection with absolute paths
+  - Platform-aware config file location display (macOS/Linux/Windows)
+  - `--dev` flag for local development (port 3001)
+  - `--url` flag for custom/remote URLs (e.g., Tailscale)
+  - Copy-paste ready JSON output
+  - Helpful setup tips and documentation links
 
 ### Changed - Documentation Improvements
 - 📚 **Renamed "Claude Desktop" section to "AI Tools"** to reflect broader MCP support
@@ -31,6 +39,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 🐳 **Fixed Docker port mapping** in docker-compose.yml (3535:3001)
 - 📝 **Enhanced MCP integration documentation** with multi-tool support
 - 🔗 **Updated all API examples** to clarify dev vs Docker port usage
+- 📉 **Removed rate limit/processing time information** from performance documentation
+
+### Security
+- 🔒 **SECURITY FIX: Removed GEMINI_API_KEY from MCP server configuration**
+  - MCP server now only requires `PDFLOW_BASE_URL`
+  - API key should only be configured in PDFlow server (via .env or Docker)
+  - Improved separation of concerns: MCP server = HTTP client, PDFlow = API processor
+  - Updated all documentation examples to reflect secure configuration
+  - Removed API key validation from MCP server startup
 
 ### Fixed
 - 🐛 **Mobile navigation accessibility** - Sidebar now accessible on all screen sizes
