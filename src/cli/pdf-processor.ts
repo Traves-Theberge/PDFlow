@@ -165,7 +165,7 @@ export class PDFProcessor {
 
       // Extract the page
       this.log(`  🔍 Processing page ${pageNum}/${pageFiles.length}...`);
-      await extractPage(sessionId, pageNum, format);
+      await extractPage(sessionId, pageNum, format, this.apiKey);
 
       processedCount++;
 

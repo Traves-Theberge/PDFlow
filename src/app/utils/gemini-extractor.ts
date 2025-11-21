@@ -14,12 +14,22 @@ export const PageExtractionSchema = z.object({
 export type PageExtraction = z.infer<typeof PageExtractionSchema>;
 
 // Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+let genAI: GoogleGenerativeAI | null = null;
+
+const getGenAI = (apiKey?: string) => {
+  if (apiKey) {
+    return new GoogleGenerativeAI(apiKey);
+  }
+  if (!genAI) {
+    genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+  }
+  return genAI;
+};
 
 /**
  * Extract structured data from a WebP image using Gemini multimodal AI
  */
-export async function extractPage(sessionId: string, page: number, format: "markdown" | "mdx" | "json" | "xml" | "yaml" | "html" | "csv" = "markdown"): Promise<PageExtraction> {
+export async function extractPage(sessionId: string, page: number, format: "markdown" | "mdx" | "json" | "xml" | "yaml" | "html" | "csv" = "markdown", apiKey?: string): Promise<PageExtraction> {
   try {
     // Try both naming conventions (page-1.webp and page-01.webp)
     const imagePath1 = `./uploads/${sessionId}/pages/page-${page}.webp`;
@@ -37,7 +47,8 @@ export async function extractPage(sessionId: string, page: number, format: "mark
     const base64Image = imageBuffer.toString('base64');
 
     // Get the Gemini model
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+    const ai = getGenAI(apiKey);
+    const model = ai.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
     // Build the dynamic prompt using templates
     const prompt = await buildPrompt({
