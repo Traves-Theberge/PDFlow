@@ -18,8 +18,9 @@ import { aggregatePages } from '@/app/utils/aggregator';
 // Schema for request validation
 const ProcessRequestSchema = z.object({
   sessionId: z.string().min(1, 'Session ID is required'),
-  format: z.enum(['markdown', 'json', 'xml', 'html', 'yaml', 'mdx']).optional().default('markdown'),
+  format: z.enum(['markdown', 'json', 'xml', 'html', 'yaml', 'mdx', 'csv']).optional().default('markdown'),
   aggregate: z.boolean().optional().default(false),
+  apiKey: z.string().optional(),
 });
 
 /**
@@ -61,7 +62,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { sessionId, format, aggregate } = validation.data;
+    const { sessionId, format, aggregate, apiKey } = validation.data;
+
+    // Set API key if provided
+    if (apiKey) {
+      process.env.GEMINI_API_KEY = apiKey;
+    }
 
     // Retrieve page files from the session directory
     // These are the WebP images created during PDF upload
@@ -101,6 +107,7 @@ export async function POST(request: NextRequest) {
     // Process pages that haven't been processed yet
     const processedPages = [];
     let errorOccurred = false;
+    let lastErrorMessage = '';
 
     for (const pageNum of pageFiles) {
       try {
@@ -124,6 +131,7 @@ export async function POST(request: NextRequest) {
       } catch (error) {
         console.error(`✗ Error processing page ${pageNum}:`, error);
         errorOccurred = true;
+        lastErrorMessage = error instanceof Error ? error.message : 'Unknown error';
 
         // Continue processing other pages even if one fails
         continue;
@@ -133,7 +141,7 @@ export async function POST(request: NextRequest) {
     // Update final status
     if (errorOccurred) {
       progress.status = 'error';
-      progress.error = 'Some pages failed to process';
+      progress.error = lastErrorMessage || 'Some pages failed to process';
     } else {
       progress.status = 'completed';
     }
@@ -160,20 +168,20 @@ export async function POST(request: NextRequest) {
       totalPages: progress.totalPages,
       processedPages: progress.processedPages,
       processingTime: `${(processingTime / 1000).toFixed(2)}s`,
-      message: progress.status === 'completed' 
-        ? 'All pages processed successfully' 
+      message: progress.status === 'completed'
+        ? 'All pages processed successfully'
         : progress.status === 'error'
-        ? 'Processing completed with errors'
-        : 'Processing in progress',
+          ? 'Processing completed with errors'
+          : 'Processing in progress',
       aggregate: aggregationResult,
       error: progress.error,
     });
 
   } catch (error) {
     console.error('Process error:', error);
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Internal server error during processing',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -195,7 +203,7 @@ export async function GET(request: NextRequest) {
     }
 
     const progress = sessionProgress.get(sessionId);
-    
+
     if (!progress) {
       return NextResponse.json(
         { error: 'Session not found' },
@@ -220,9 +228,9 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Progress check error:', error);
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Internal server error',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -236,7 +244,7 @@ async function getAggregatedInfo(sessionId: string) {
   try {
     const outputDir = `./outputs/${sessionId}`;
     const fs = await import('fs');
-    
+
     if (fs.existsSync(`${outputDir}/metadata.json`)) {
       const metadata = JSON.parse(fs.readFileSync(`${outputDir}/metadata.json`, 'utf-8'));
       return {
@@ -247,7 +255,7 @@ async function getAggregatedInfo(sessionId: string) {
         totalCharacters: metadata.metadata.totalCharacters,
       };
     }
-    
+
     return { available: false };
   } catch (error) {
     return { available: false, error: error instanceof Error ? error.message : 'Unknown error' };

@@ -1,4 +1,4 @@
-# PDFlow Dockerfile
+# PDFlow Dockerfile v5.2.0
 # Multi-stage build for optimized production image
 
 # Stage 1: Base image with system dependencies

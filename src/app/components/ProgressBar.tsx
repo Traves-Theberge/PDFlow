@@ -41,6 +41,12 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         const result = await response.json();
 
         if (!response.ok) {
+          if (response.status === 404) {
+            // Session not found - stop polling
+            clearInterval(interval);
+            setPollingInterval(null);
+            return;
+          }
           throw new Error(result.error || 'Failed to get progress');
         }
 
@@ -53,7 +59,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         const currentProgress = uploadProgress.progress;
         const currentProcessed = uploadProgress.processedPages;
         const currentStatus = uploadProgress.status;
-        
+
         if (
           currentProgress !== progress ||
           currentProcessed !== result.processedPages ||
@@ -138,6 +144,27 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     }
   };
 
+  // Determine current step index
+  const getStepIndex = (status: string) => {
+    switch (status) {
+      case 'uploading': return 0;
+      case 'converting': return 1;
+      case 'processing': return 2;
+      case 'completed': return 3;
+      case 'error': return 2; // Show error at processing stage usually
+      default: return 0;
+    }
+  };
+
+  const steps = [
+    { label: 'Upload', icon: 'M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12' },
+    { label: 'Convert', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' },
+    { label: 'Extract', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
+    { label: 'Done', icon: 'M5 13l4 4L19 7' },
+  ];
+
+  const currentStepIndex = getStepIndex(uploadProgress.status);
+
   return (
     <AnimatePresence>
       <motion.div
@@ -147,160 +174,103 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         transition={{ duration: 0.3 }}
         className="w-full max-w-2xl mx-auto"
       >
-        <div className={`rounded-lg border p-6 transition-colors duration-200 ${
-          darkMode
-            ? 'bg-neutral-900 border-neutral-800'
-            : 'bg-white border-neutral-200'
-        }`}>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className={`text-sm font-semibold ${
-              darkMode ? 'text-white' : 'text-neutral-900'
-            }`}>
-              Processing Progress
-            </h3>
+        <div className={`rounded-lg border p-6 transition-colors duration-200 ${darkMode
+          ? 'bg-neutral-900 border-neutral-800'
+          : 'bg-white border-neutral-200'
+          }`}>
 
-            <div className="flex items-center space-x-2">
-              <div className={`w-2 h-2 rounded-full ${getStatusColor(uploadProgress.status)} animate-pulse`} />
-              <span className={`text-xs ${
-                darkMode ? 'text-neutral-400' : 'text-neutral-600'
+          {/* Stepper */}
+          <div className="flex items-center justify-between mb-8 relative">
+            {/* Connecting Line */}
+            <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-full h-0.5 -z-10 ${darkMode ? 'bg-neutral-800' : 'bg-neutral-100'
+              }`} />
+
+            {/* Active Line */}
+            <motion.div
+              className={`absolute left-0 top-1/2 -translate-y-1/2 h-0.5 -z-10 ${darkMode ? 'bg-white' : 'bg-black'
+                }`}
+              initial={{ width: '0%' }}
+              animate={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }}
+              transition={{ duration: 0.5 }}
+            />
+
+            {steps.map((step, index) => {
+              const isActive = index <= currentStepIndex;
+              const isCurrent = index === currentStepIndex;
+
+              return (
+                <div key={step.label} className="flex flex-col items-center relative">
+                  <motion.div
+                    initial={false}
+                    animate={{
+                      scale: isCurrent ? 1.1 : 1,
+                      backgroundColor: isActive
+                        ? (darkMode ? '#ffffff' : '#000000')
+                        : (darkMode ? '#262626' : '#e5e5e5'),
+                      borderColor: isActive
+                        ? (darkMode ? '#ffffff' : '#000000')
+                        : (darkMode ? '#404040' : '#d4d4d4')
+                    }}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors duration-300 z-10`}
+                  >
+                    <svg
+                      className={`w-4 h-4 ${isActive
+                        ? (darkMode ? 'text-black' : 'text-white')
+                        : (darkMode ? 'text-neutral-500' : 'text-neutral-500')
+                        }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d={step.icon} />
+                    </svg>
+                  </motion.div>
+                  <span className={`text-xs mt-2 font-medium absolute -bottom-6 whitespace-nowrap transition-colors duration-300 ${isActive
+                    ? (darkMode ? 'text-white' : 'text-black')
+                    : (darkMode ? 'text-neutral-500' : 'text-neutral-400')
+                    }`}>
+                    {step.label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Header */}
+          <div className="flex items-center justify-between mb-4 mt-2">
+            <h3 className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-neutral-900'
               }`}>
-                {getStatusText(uploadProgress.status)}
-              </span>
-            </div>
+              {getStatusText(uploadProgress.status)}
+            </h3>
+            <span className={`text-xs font-mono ${darkMode ? 'text-neutral-400' : 'text-neutral-500'
+              }`}>
+              {uploadProgress.progress}%
+            </span>
           </div>
 
           {/* Progress bar */}
-          <div className="mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className={`text-xs font-medium ${
-                darkMode ? 'text-neutral-300' : 'text-neutral-700'
-              }`}>
-                {uploadProgress.message || getStatusText(uploadProgress.status)}
-              </span>
-              <span className={`text-xs ${
-                darkMode ? 'text-neutral-500' : 'text-neutral-500'
-              }`}>
-                {uploadProgress.progress}%
-              </span>
-            </div>
-
-            <div className={`w-full rounded-full h-2 overflow-hidden ${
-              darkMode ? 'bg-neutral-800' : 'bg-neutral-200'
+          <div className={`w-full rounded-full h-1.5 overflow-hidden mb-4 ${darkMode ? 'bg-neutral-800' : 'bg-neutral-100'
             }`}>
-              <motion.div
-                className={`h-full rounded-full transition-colors duration-300 ${getStatusColor(uploadProgress.status)}`}
-                initial={{ width: 0 }}
-                animate={{ width: `${uploadProgress.progress}%` }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
-              />
-            </div>
+            <motion.div
+              className={`h-full rounded-full transition-colors duration-300 ${getStatusColor(uploadProgress.status)}`}
+              initial={{ width: 0 }}
+              animate={{ width: `${uploadProgress.progress}%` }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+            />
           </div>
 
-          {/* Page progress */}
-          {uploadProgress.totalPages > 0 && (
-            <div className={`rounded-lg p-4 ${
-              darkMode ? 'bg-neutral-950 border border-neutral-800' : 'bg-neutral-50 border border-neutral-200'
-            }`}>
-              <div className="flex items-center justify-between text-xs">
-                <span className={darkMode ? 'text-neutral-400' : 'text-neutral-600'}>
-                  Pages processed:
-                </span>
-                <span className={`font-medium ${
-                  darkMode ? 'text-white' : 'text-neutral-900'
-                }`}>
-                  {uploadProgress.processedPages} / {uploadProgress.totalPages}
-                </span>
-              </div>
 
-              {/* Mini progress indicators for pages */}
-              <div className="mt-3 flex flex-wrap gap-1">
-                {Array.from({ length: uploadProgress.totalPages }, (_, i) => (
-                  <div
-                    key={i}
-                    className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${
-                      i < uploadProgress.processedPages
-                        ? (darkMode ? 'bg-white' : 'bg-black')
-                        : (darkMode ? 'bg-neutral-700' : 'bg-neutral-300')
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Error display */}
           {uploadProgress.status === 'error' && uploadProgress.error && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className={`mt-4 border rounded-lg p-4 ${
-                darkMode
-                  ? 'bg-red-950/30 border-red-900/50'
-                  : 'bg-red-50 border-red-200'
-              }`}
+              className={`mt-4 text-xs ${darkMode ? 'text-red-400' : 'text-red-600'
+                }`}
             >
-              <div className="flex items-start">
-                <svg
-                  className={`h-4 w-4 mr-2 mt-0.5 flex-shrink-0 ${
-                    darkMode ? 'text-red-400' : 'text-red-500'
-                  }`}
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <div>
-                  <p className={`text-xs font-medium ${
-                    darkMode ? 'text-red-400' : 'text-red-800'
-                  }`}>
-                    Processing Error
-                  </p>
-                  <p className={`text-xs mt-1 ${
-                    darkMode ? 'text-red-300' : 'text-red-700'
-                  }`}>
-                    {uploadProgress.error}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Success display */}
-          {uploadProgress.status === 'completed' && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className={`mt-4 border rounded-lg p-4 ${
-                darkMode
-                  ? 'bg-neutral-900 border-neutral-700'
-                  : 'bg-neutral-50 border-neutral-200'
-              }`}
-            >
-              <div className="flex items-center">
-                <svg
-                  className={`h-4 w-4 mr-2 ${
-                    darkMode ? 'text-white' : 'text-black'
-                  }`}
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <p className={`text-xs font-medium ${
-                  darkMode ? 'text-white' : 'text-neutral-900'
-                }`}>
-                  All {uploadProgress.totalPages} pages processed successfully!
-                </p>
-              </div>
+              Error: {uploadProgress.error}
             </motion.div>
           )}
         </div>

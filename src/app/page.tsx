@@ -121,6 +121,9 @@ export default function Home() {
    */
   const startProcessing = async (sessionId: string) => {
     try {
+      // Get API key from session storage
+      const apiKey = sessionStorage.getItem('gemini_api_key');
+
       const response = await fetch('/api/process', {
         method: 'POST',
         headers: {
@@ -130,6 +133,7 @@ export default function Home() {
           sessionId,
           format: selectedFormat,      // User-selected output format
           aggregate: false,             // Don't combine pages (individual extraction)
+          apiKey: apiKey || undefined,  // Pass API key if available
         }),
       });
 
@@ -269,11 +273,10 @@ export default function Home() {
               <div className="flex items-center space-x-1">
                 <a
                   href="/docs"
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                    darkMode
+                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${darkMode
                       ? 'text-neutral-400 hover:text-white hover:bg-neutral-800'
                       : 'text-neutral-600 hover:text-black hover:bg-neutral-100'
-                  }`}
+                    }`}
                   title="View Documentation"
                 >
                   Docs
@@ -403,11 +406,10 @@ export default function Home() {
                       <button
                         key={format}
                         onClick={() => setSelectedFormat(format)}
-                        className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                          selectedFormat === format
+                        className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${selectedFormat === format
                             ? (darkMode ? 'bg-white text-black' : 'bg-black text-white')
                             : (darkMode ? 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800 border border-neutral-800' : 'bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200')
-                        }`}
+                          }`}
                       >
                         {format.toUpperCase()}
                       </button>

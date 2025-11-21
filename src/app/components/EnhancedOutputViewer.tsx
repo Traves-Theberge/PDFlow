@@ -1,24 +1,8 @@
-/**
- * EnhancedOutputViewer Component
- *
- * Real-time PDF extraction results viewer with threaded output display.
- * Shows extraction progress and allows downloading individual pages or all pages combined.
- *
- * Features:
- * - Real-time polling for completed pages (2-second intervals)
- * - Grid and list view modes
- * - Individual page preview and download
- * - Bulk download of all pages
- * - Auto-scroll to first completed page
- * - Dark mode support
- *
- * @component
- */
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
 
 /**
  * Represents the result of processing a single PDF page
@@ -198,163 +182,113 @@ export const EnhancedOutputViewer: React.FC<EnhancedOutputViewerProps> = ({
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6">
       {/* Header with controls */}
-      <div className={`rounded-lg border p-6 transition-colors duration-200 ${
-        darkMode
-          ? 'bg-neutral-900 border-neutral-800'
-          : 'bg-white border-neutral-200'
-      }`}>
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className={`text-sm font-semibold ${
-              darkMode ? 'text-white' : 'text-neutral-900'
-            }`}>Extraction Results</h2>
-            <p className={`text-xs mt-1 ${
-              darkMode ? 'text-neutral-400' : 'text-neutral-600'
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <h2 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-neutral-900'
             }`}>
-              {completedCount} of {totalPages} pages completed ({progressPercent}%)
-            </p>
-          </div>
+            Results
+          </h2>
 
-          <div className="flex items-center space-x-2">
-            {/* View mode toggle */}
-            <div className={`flex items-center space-x-1 rounded-md p-1 ${
-              darkMode ? 'bg-neutral-950' : 'bg-neutral-100'
+          {/* View mode toggle */}
+          <div className={`flex items-center space-x-1 rounded-md p-1 border ${darkMode ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-neutral-200'
             }`}>
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                  viewMode === 'grid'
-                    ? (darkMode ? 'bg-neutral-800 text-white' : 'bg-white text-neutral-900')
-                    : (darkMode ? 'text-neutral-400 hover:text-white' : 'text-neutral-600 hover:text-neutral-900')
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-1.5 rounded-sm transition-colors ${viewMode === 'grid'
+                ? (darkMode ? 'bg-neutral-800 text-white' : 'bg-neutral-100 text-neutral-900')
+                : (darkMode ? 'text-neutral-500 hover:text-neutral-300' : 'text-neutral-400 hover:text-neutral-600')
                 }`}
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 6v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                </svg>
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                  viewMode === 'list'
-                    ? (darkMode ? 'bg-neutral-800 text-white' : 'bg-white text-neutral-900')
-                    : (darkMode ? 'text-neutral-400 hover:text-white' : 'text-neutral-600 hover:text-neutral-900')
+              title="Grid View"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 6v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-1.5 rounded-sm transition-colors ${viewMode === 'list'
+                ? (darkMode ? 'bg-neutral-800 text-white' : 'bg-neutral-100 text-neutral-900')
+                : (darkMode ? 'text-neutral-500 hover:text-neutral-300' : 'text-neutral-400 hover:text-neutral-600')
                 }`}
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Download all button */}
-            {completedCount > 0 && (
-              <button
-                onClick={downloadAll}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center space-x-1.5 ${
-                  darkMode
-                    ? 'bg-white text-black hover:bg-neutral-200'
-                    : 'bg-black text-white hover:bg-neutral-800'
-                }`}
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                <span>Download All</span>
-              </button>
-            )}
+              title="List View"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
           </div>
         </div>
 
-        {/* Progress bar */}
-        <div className={`w-full rounded-full h-2 ${
-          darkMode ? 'bg-neutral-800' : 'bg-neutral-200'
-        }`}>
-          <motion.div
-            className={darkMode ? 'h-full bg-white rounded-full' : 'h-full bg-black rounded-full'}
-            initial={{ width: 0 }}
-            animate={{ width: `${progressPercent}%` }}
-            transition={{ duration: 0.5 }}
-          />
-        </div>
+        {/* Download all button */}
+        {completedCount > 0 && (
+          <button
+            onClick={downloadAll}
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center space-x-2 ${darkMode
+              ? 'bg-white text-black hover:bg-neutral-200'
+              : 'bg-black text-white hover:bg-neutral-800'
+              }`}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            <span>Download All</span>
+          </button>
+        )}
       </div>
 
-      {/* Grid/List View */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Page list/grid */}
         <div className={`${selectedPage ? 'lg:col-span-1' : 'lg:col-span-3'}`}>
-          <div className={`rounded-lg border p-4 transition-colors duration-200 ${
-            darkMode ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-neutral-200'
-          } ${viewMode === 'grid' ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-3' : 'space-y-2'}`}>
+          <div className={`rounded-lg border p-4 transition-colors duration-200 ${darkMode ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-neutral-200'
+            } ${viewMode === 'grid' ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-3' : 'space-y-2'}`}>
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
               const result = pageResults.get(pageNum);
               const isCompleted = !!result;
               const isSelected = selectedPage === pageNum;
 
               return (
-                <motion.button
+                <motion.div
                   key={pageNum}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: pageNum * 0.05 }}
                   onClick={() => isCompleted && setSelectedPage(pageNum)}
-                  className={`relative p-3 rounded-md border transition-all ${
-                    isSelected
-                      ? (darkMode ? 'border-white bg-neutral-950' : 'border-black bg-neutral-50')
-                      : isCompleted
-                      ? (darkMode ? 'border-neutral-700 hover:border-neutral-600 bg-neutral-900' : 'border-neutral-200 hover:border-neutral-400 bg-white')
+                  className={`relative p-3 rounded-md border transition-all cursor-pointer group ${isSelected
+                    ? (darkMode ? 'border-white bg-neutral-950' : 'border-black bg-neutral-50')
+                    : isCompleted
+                      ? (darkMode ? 'border-neutral-800 hover:border-neutral-600 bg-neutral-900' : 'border-neutral-200 hover:border-neutral-400 bg-white')
                       : (darkMode ? 'border-neutral-800 bg-neutral-950 cursor-not-allowed' : 'border-neutral-100 bg-neutral-50 cursor-not-allowed')
-                  }`}
+                    }`}
                 >
                   <div className="flex flex-col items-center">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-2 ${
-                      isCompleted
-                        ? (darkMode ? 'bg-white text-black' : 'bg-black text-white')
-                        : (darkMode ? 'bg-neutral-800 text-neutral-600' : 'bg-neutral-100 text-neutral-400')
-                    }`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-2 transition-colors ${isCompleted
+                      ? (darkMode ? 'bg-white text-black' : 'bg-black text-white')
+                      : (darkMode ? 'bg-neutral-800 text-neutral-600' : 'bg-neutral-100 text-neutral-400')
+                      }`}>
                       {isCompleted ? (
-                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
+                        <span className="text-xs font-bold">{pageNum}</span>
                       ) : (
-                        <svg className="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                       )}
                     </div>
-                    <span className={`text-xs font-medium ${
-                      darkMode ? 'text-white' : 'text-neutral-900'
-                    }`}>Page {pageNum}</span>
+
                     {isCompleted && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           downloadPage(pageNum);
                         }}
-                        className={`mt-2 text-xs ${
-                          darkMode ? 'text-neutral-400 hover:text-white' : 'text-neutral-600 hover:text-neutral-900'
-                        }`}
+                        className={`mt-1 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] uppercase tracking-wider font-medium ${darkMode ? 'text-neutral-400 hover:text-white' : 'text-neutral-500 hover:text-black'
+                          }`}
                       >
                         Download
                       </button>
                     )}
                   </div>
-
-                  {/* Completion badge */}
-                  {isCompleted && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className={`absolute top-1.5 right-1.5 w-4 h-4 rounded-full flex items-center justify-center ${
-                        darkMode ? 'bg-white' : 'bg-black'
-                      }`}
-                    >
-                      <svg className={`w-2.5 h-2.5 ${darkMode ? 'text-black' : 'text-white'}`} fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </motion.div>
-                  )}
-                </motion.button>
+                </motion.div>
               );
             })}
           </div>
@@ -367,34 +301,50 @@ export const EnhancedOutputViewer: React.FC<EnhancedOutputViewerProps> = ({
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-2"
           >
-            <div className={`rounded-lg border overflow-hidden transition-colors duration-200 ${
-              darkMode ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-neutral-200'
-            }`}>
-              <div className={`border-b px-4 py-3 flex items-center justify-between ${
-                darkMode ? 'bg-neutral-950 border-neutral-800' : 'bg-neutral-50 border-neutral-200'
+            <div className={`rounded-lg border overflow-hidden transition-colors duration-200 flex flex-col h-[600px] ${darkMode ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-neutral-200'
               }`}>
-                <h3 className={`text-sm font-semibold ${
-                  darkMode ? 'text-white' : 'text-neutral-900'
+              <div className={`border-b px-4 py-3 flex items-center justify-between flex-shrink-0 ${darkMode ? 'bg-neutral-950 border-neutral-800' : 'bg-neutral-50 border-neutral-200'
                 }`}>
-                  Page {selectedPage} Preview
+                <h3 className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-neutral-900'
+                  }`}>
+                  Page {selectedPage}
                 </h3>
-                <button
-                  onClick={() => setSelectedPage(null)}
-                  className={`p-1 rounded-md transition-colors ${
-                    darkMode ? 'text-neutral-400 hover:text-white hover:bg-neutral-900' : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100'
-                  }`}
-                >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => downloadPage(selectedPage!)}
+                    className={`p-1.5 rounded-md transition-colors ${darkMode ? 'text-neutral-400 hover:text-white hover:bg-neutral-800' : 'text-neutral-500 hover:text-black hover:bg-neutral-200'
+                      }`}
+                    title="Download Page"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => setSelectedPage(null)}
+                    className={`p-1.5 rounded-md transition-colors ${darkMode ? 'text-neutral-400 hover:text-white hover:bg-neutral-800' : 'text-neutral-500 hover:text-black hover:bg-neutral-200'
+                      }`}
+                    title="Close Preview"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
               </div>
-              <div className="p-4 max-h-[600px] overflow-y-auto">
-                <pre className={`whitespace-pre-wrap text-xs font-mono ${
-                  darkMode ? 'text-neutral-300' : 'text-neutral-700'
-                }`}>
-                  {pageResults.get(selectedPage)?.content}
-                </pre>
+
+              <div className="flex-1 overflow-y-auto p-6">
+                <div className={`prose prose-sm max-w-none ${darkMode ? 'prose-invert' : ''
+                  }`}>
+                  {format === 'markdown' || format === 'mdx' ? (
+                    <ReactMarkdown>{pageResults.get(selectedPage)?.content || ''}</ReactMarkdown>
+                  ) : (
+                    <pre className={`whitespace-pre-wrap font-mono text-xs ${darkMode ? 'text-neutral-300' : 'text-neutral-900'
+                      }`}>
+                      {pageResults.get(selectedPage)?.content}
+                    </pre>
+                  )}
+                </div>
               </div>
             </div>
           </motion.div>

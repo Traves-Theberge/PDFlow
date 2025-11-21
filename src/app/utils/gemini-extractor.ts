@@ -24,9 +24,9 @@ export async function extractPage(sessionId: string, page: number, format: "mark
     // Try both naming conventions (page-1.webp and page-01.webp)
     const imagePath1 = `./uploads/${sessionId}/pages/page-${page}.webp`;
     const imagePath2 = `./uploads/${sessionId}/pages/page-${String(page).padStart(2, '0')}.webp`;
-    
+
     const imagePath = fs.existsSync(imagePath1) ? imagePath1 : imagePath2;
-    
+
     // Check if the image file exists
     if (!fs.existsSync(imagePath)) {
       throw new Error(`Image file not found: ${imagePath}`);
@@ -99,27 +99,7 @@ export async function extractPage(sessionId: string, page: number, format: "mark
 
   } catch (error) {
     console.error(`Error extracting page ${page} for session ${sessionId}:`, error);
-    
-    // Return a fallback extraction
-    const fallbackData: PageExtraction = {
-      page,
-      text: `Error extracting content: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      format: 'markdown',
-    };
-
-    // Still try to save the fallback data
-    try {
-      const outputDir = `./outputs/${sessionId}`;
-      if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
-      }
-      const outputPath = `${outputDir}/page-${page}.json`;
-      fs.writeFileSync(outputPath, JSON.stringify(fallbackData, null, 2));
-    } catch (saveError) {
-      console.error('Failed to save fallback data:', saveError);
-    }
-
-    return fallbackData;
+    throw error;
   }
 }
 
@@ -128,7 +108,7 @@ export async function extractPage(sessionId: string, page: number, format: "mark
  */
 export function getPageFiles(sessionId: string): number[] {
   const pagesDir = `./uploads/${sessionId}/pages`;
-  
+
   if (!fs.existsSync(pagesDir)) {
     return [];
   }

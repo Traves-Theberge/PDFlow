@@ -16,7 +16,8 @@ PDFlow is a modern, full-stack PDF extraction tool that leverages multimodal AI 
 - **Image Conversion**: Converts PDF pages to WebP images using pdftocairo
 - **AI Extraction**: Uses Google Gemini 2.0 Flash multimodal AI for intelligent extraction
 - **Multiple Formats**: Export results in Markdown, MDX, JSON, XML, YAML, HTML, or CSV
-- **Real-time Progress**: Live progress tracking with page-by-page updates (web and CLI)
+- **Visual Progress**: 4-step visual tracker (Upload → Convert → Extract → Done) with real-time updates
+- **Rich Previews**: Rendered Markdown previews with syntax highlighting and formatting
 - **Threaded Output**: View results as they complete with real-time streaming
 - **Dark Mode**: Beautiful dark mode support with localStorage persistence
 - **Minimal Design**: Clean black/white/grey aesthetic inspired by shadcn/ui
@@ -37,6 +38,7 @@ PDFlow is a modern, full-stack PDF extraction tool that leverages multimodal AI 
 | Layer | Technology |
 |--------|-------------|
 | Frontend | Next.js 16.0.1, React 19, TailwindCSS 4, Framer Motion |
+| Rendering | React Markdown, Rehype Highlight |
 | State | Zustand |
 | Validation | Zod |
 | Templates | Handlebars |
