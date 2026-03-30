@@ -53,6 +53,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
-    "tsx": "^4.20.6"
+    "tsx": "^4.20.6",
+    "vitest": "^4.1.2"
   }
 }
