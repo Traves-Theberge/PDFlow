@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { extractPage, getPageFiles, isExtractionComplete, isPageExtracted } from '@/app/utils/gemini-extractor';
 import { aggregatePages } from '@/app/utils/aggregator';
+import { loadConfig } from '@/config/loader';
 
 /**
  * PDF Processing API Route
@@ -64,9 +65,14 @@ export async function POST(request: NextRequest) {
 
     const { sessionId, format, aggregate, apiKey } = validation.data;
 
-    // Set API key if provided
+    // Set API key if provided, otherwise use config
     if (apiKey) {
       process.env.GEMINI_API_KEY = apiKey;
+    } else {
+      const config = loadConfig();
+      if (config.geminiApiKey) {
+        process.env.GEMINI_API_KEY = config.geminiApiKey;
+      }
     }
 
     // Retrieve page files from the session directory

@@ -10,7 +10,8 @@
     "lint": "next lint",
     "cli:build": "tsc src/cli/pdflow.ts --outDir dist --module commonjs --esModuleInterop --skipLibCheck --resolveJsonModule",
     "cli": "node dist/cli/pdflow.js",
-    "pdflow": "tsx src/cli/pdflow.ts"
+    "pdflow": "tsx src/cli/pdflow.ts",
+    "test": "vitest run"
   },
   "bin": {
     "pdflow": "./dist/cli/pdflow.js"
@@ -37,6 +38,7 @@
     "eslint-config-next": "^16.0.1",
     "framer-motion": "^12.23.24",
     "handlebars": "^4.7.8",
+    "js-yaml": "^4.1.1",
     "next": "^16.0.1",
     "pdf-lib": "^1.17.1",
     "pdf-poppler": "^0.2.3",
@@ -53,6 +55,8 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
-    "tsx": "^4.20.6"
+    "@types/js-yaml": "^4.0.9",
+    "tsx": "^4.20.6",
+    "vitest": "^4.1.2"
   }
 }

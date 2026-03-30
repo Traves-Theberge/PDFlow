@@ -21,25 +21,25 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import fs from 'fs';
 import path from 'path';
+import { loadConfig } from '../config/loader';
 
 /**
- * Configuration
- * Set via environment variables or defaults
- * Note: GEMINI_API_KEY should be configured in PDFlow itself, not here
+ * Configuration — loaded from env vars → pdflow.config.yml → defaults
  */
-const PDFLOW_BASE_URL = process.env.PDFLOW_BASE_URL || 'http://localhost:3001';
+const config = loadConfig();
+const PDFLOW_BASE_URL = config.baseUrl;
 
 /**
  * Security: Allowed directories for PDF access
- * Set ALLOWED_DIRECTORIES env var to customize
+ * Set ALLOWED_DIRECTORIES env var or allowed_directories in pdflow.config.yml
  * - Colon-separated list: "/home/user/pdfs:/home/user/docs"
  * - "*" to allow all directories (less secure, but more flexible)
  * - Empty/unset: defaults to Documents, Downloads, Desktop
  */
-const ALLOW_ALL_DIRECTORIES = process.env.ALLOWED_DIRECTORIES === '*';
+const ALLOW_ALL_DIRECTORIES = config.allowedDirectories === '*';
 const ALLOWED_DIRECTORIES = ALLOW_ALL_DIRECTORIES
   ? []
-  : (process.env.ALLOWED_DIRECTORIES || '')
+  : config.allowedDirectories
       .split(':')
       .filter(Boolean)
       .map(dir => path.resolve(dir));
@@ -48,8 +48,8 @@ const ALLOWED_DIRECTORIES = ALLOW_ALL_DIRECTORIES
 if (!ALLOW_ALL_DIRECTORIES && ALLOWED_DIRECTORIES.length === 0) {
   const homeDir = process.env.HOME || process.env.USERPROFILE || '';
   ALLOWED_DIRECTORIES.push(
-    process.cwd(), // Current working directory (where AI tool was launched)
-    homeDir,       // Entire home directory (for flexibility)
+    process.cwd(),
+    homeDir,
     path.join(homeDir, 'Documents'),
     path.join(homeDir, 'Downloads'),
     path.join(homeDir, 'Desktop')

@@ -1,0 +1,17 @@
+# PDFlow Configuration
+# Values here are overridden by environment variables when set.
+#
+# Environment variable mapping:
+#   gemini_api_key      -> GEMINI_API_KEY
+#   port                -> PDFLOW_PORT
+#   log_level           -> PDFLOW_LOG_LEVEL
+#   output_dir          -> PDFLOW_OUTPUT_DIR
+#   base_url            -> PDFLOW_BASE_URL
+#   allowed_directories -> ALLOWED_DIRECTORIES
+
+# gemini_api_key: "your_gemini_api_key_here"
+port: 3001
+log_level: "info"
+output_dir: "./outputs"
+base_url: "http://localhost:3001"
+# allowed_directories: "/home/user/pdfs:/home/user/docs"

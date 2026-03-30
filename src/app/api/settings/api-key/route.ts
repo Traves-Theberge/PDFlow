@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { loadConfig } from '@/config/loader';
 
 // GET - Check if API key is configured
 export async function GET() {
   try {
-    const hasApiKey = !!process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here';
+    const config = loadConfig();
+    const hasApiKey = !!config.geminiApiKey && config.geminiApiKey !== 'your_gemini_api_key_here';
 
     return NextResponse.json({
       hasApiKey,

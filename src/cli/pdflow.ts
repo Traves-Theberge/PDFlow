@@ -24,6 +24,7 @@ import { Command } from 'commander';
 import { PDFProcessor } from './pdf-processor';
 import * as fs from 'fs';
 import * as path from 'path';
+import { loadConfig } from '../config/loader';
 
 const program = new Command();
 
@@ -80,7 +81,8 @@ program
       }
 
       // Validate API key
-      const apiKey = options.apiKey || process.env.GEMINI_API_KEY;
+      const config = loadConfig();
+      const apiKey = options.apiKey || config.geminiApiKey;
       if (!apiKey) {
         console.error('❌ Error: Gemini API key required');
         console.error('   Provide via --api-key flag or GEMINI_API_KEY environment variable');
@@ -261,11 +263,12 @@ program
   .option('-k, --api-key <key>', 'Gemini API key to validate')
   .action(async (options) => {
     try {
-      const apiKey = options.apiKey || process.env.GEMINI_API_KEY;
+      const validateConfig = loadConfig();
+      const apiKey = options.apiKey || validateConfig.geminiApiKey;
 
       if (!apiKey) {
         console.error('❌ Error: API key required');
-        console.error('   Provide via --api-key flag or GEMINI_API_KEY environment variable');
+        console.error('   Provide via --api-key flag, GEMINI_API_KEY env var, or pdflow.config.yml');
         process.exit(1);
       }
 

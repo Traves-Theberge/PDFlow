@@ -20,6 +20,7 @@ import * as path from 'path';
 import { spawn } from 'child_process';
 import { extractPage, getPageFiles, isPageExtracted } from '../app/utils/gemini-extractor';
 import { aggregatePages } from '../app/utils/aggregator';
+import { loadConfig } from '../config/loader';
 
 export interface ProcessorOptions {
   apiKey: string;
@@ -51,7 +52,7 @@ export class PDFProcessor {
     this.apiKey = options.apiKey;
     this.verbose = options.verbose || false;
 
-    // Set API key as environment variable for gemini-extractor to use
+    // Set API key so gemini-extractor and the config loader can pick it up
     process.env.GEMINI_API_KEY = this.apiKey;
   }
 

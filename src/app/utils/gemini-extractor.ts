@@ -2,6 +2,7 @@ import fs from 'fs';
 import { z } from 'zod';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { buildPrompt } from './prompt-builder';
+import { loadConfig } from '../../config/loader';
 
 // Schema for extracted page data
 export const PageExtractionSchema = z.object({
@@ -21,7 +22,8 @@ const getGenAI = (apiKey?: string) => {
     return new GoogleGenerativeAI(apiKey);
   }
   if (!genAI) {
-    genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+    const config = loadConfig();
+    genAI = new GoogleGenerativeAI(config.geminiApiKey);
   }
   return genAI;
 };
