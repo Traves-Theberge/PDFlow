@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { extractPage, getPageFiles, isExtractionComplete, isPageExtracted } from '@/app/utils/gemini-extractor';
 import { aggregatePages } from '@/app/utils/aggregator';
+import { withCompression } from '@/lib/with-compression';
 
 /**
  * PDF Processing API Route
@@ -49,7 +50,7 @@ const sessionProgress = new Map<string, {
  *
  * @returns {Object} Processing status and results
  */
-export async function POST(request: NextRequest) {
+export const POST = withCompression(async function POST(request: NextRequest) {
   try {
     // Parse and validate request body
     const body = await request.json();
@@ -188,9 +189,9 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
 
-export async function GET(request: NextRequest) {
+export const GET = withCompression(async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get('sessionId');
@@ -237,7 +238,7 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
 
 // Helper function to get aggregated info
 async function getAggregatedInfo(sessionId: string) {

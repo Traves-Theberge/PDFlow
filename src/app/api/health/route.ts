@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { withCompression } from '@/lib/with-compression';
 
 /**
  * Health Check Endpoint
@@ -9,7 +10,7 @@ import { NextResponse } from 'next/server';
  * @route GET /api/health
  * @returns {Object} Health status
  */
-export async function GET() {
+export const GET = withCompression(async function GET() {
   return NextResponse.json(
     {
       status: 'ok',
@@ -18,4 +19,4 @@ export async function GET() {
     },
     { status: 200 }
   );
-}
+});

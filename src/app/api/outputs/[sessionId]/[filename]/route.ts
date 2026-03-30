@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { withCompression } from '@/lib/with-compression';
 
 /**
  * Validate path component (sessionId or filename) to prevent directory traversal
@@ -42,7 +43,7 @@ function getSecureFilePath(sessionId: string, filename: string): string | null {
   return resolvedFilePath;
 }
 
-export async function GET(
+export const GET = withCompression(async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ sessionId: string; filename: string }> }
 ) {
@@ -105,4 +106,4 @@ export async function GET(
       { status: 500 }
     );
   }
-}
+});

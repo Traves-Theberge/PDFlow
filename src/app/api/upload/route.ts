@@ -4,6 +4,7 @@ import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import { withCompression } from '@/lib/with-compression';
 
 // Security Constants
 const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB limit
@@ -86,7 +87,7 @@ function executeConversionScript(
   });
 }
 
-export async function POST(request: NextRequest) {
+export const POST = withCompression(async function POST(request: NextRequest) {
   try {
     // Parse form data
     const formData = await request.formData();
@@ -191,18 +192,18 @@ export async function POST(request: NextRequest) {
     console.error('Upload error:', error);
     
     return NextResponse.json(
-      { 
+      {
         error: 'Internal server error during upload',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
   }
-}
+});
 
-export async function GET() {
+export const GET = withCompression(async function GET() {
   return NextResponse.json(
     { error: 'Method not allowed' },
     { status: 405 }
   );
-}
+});

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { withCompression } from '@/lib/with-compression';
 
 // GET - Check if API key is configured
-export async function GET() {
+export const GET = withCompression(async function GET() {
   try {
     const hasApiKey = !!process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here';
 
@@ -15,10 +16,10 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+});
 
 // POST - Store API key (in session/cookie for client-side usage)
-export async function POST(request: NextRequest) {
+export const POST = withCompression(async function POST(request: NextRequest) {
   try {
     const { apiKey } = await request.json();
 
@@ -40,10 +41,10 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
 
 // DELETE - Clear API key
-export async function DELETE() {
+export const DELETE = withCompression(async function DELETE() {
   try {
     return NextResponse.json({
       success: true,
@@ -55,4 +56,4 @@ export async function DELETE() {
       { status: 500 }
     );
   }
-}
+});

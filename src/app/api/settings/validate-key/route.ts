@@ -24,6 +24,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { withCompression } from '@/lib/with-compression';
 
 /**
  * POST handler - Validate Google Gemini API key
@@ -38,7 +39,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
  * @param {NextRequest} request - Incoming HTTP request with { apiKey: string }
  * @returns {Promise<NextResponse>} JSON response with validation result
  */
-export async function POST(request: NextRequest) {
+export const POST = withCompression(async function POST(request: NextRequest) {
   try {
     // Extract API key from request body
     const { apiKey } = await request.json();
@@ -102,4 +103,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
